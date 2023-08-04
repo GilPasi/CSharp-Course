@@ -63,12 +63,6 @@ namespace sapir_c23_dn_course_gil_and_david.Ex01_01
             {
                 Console.WriteLine(string.Format("Please enter a {0} digits binary number", i_RequestedLength));
                 userInput = Console.ReadLine();
-
-                if (userInput == null)
-                {
-                    userInput = "";
-                }
-
                 validInput = CheckIfHasValidSize(userInput, i_RequestedLength) && CheckIfBinary(userInput);
                 if (!validInput)
                 {
@@ -146,11 +140,11 @@ namespace sapir_c23_dn_course_gil_and_david.Ex01_01
         public static bool CheckIfIsAscendingSequence(int i_Number)
         {
             bool result = true;
-            string NumberAsString = i_Number.ToString();
+            string numberAsString = i_Number.ToString();
 
-            for (int i = 1; i < NumberAsString.Length && result; i++)
+            for (int i = 1; i < numberAsString.Length && result; i++)
             {
-                result = NumberAsString[i] > NumberAsString[i - 1];
+                result = numberAsString[i] > numberAsString[i - 1];
             }
 
             return result;
