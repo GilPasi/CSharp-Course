@@ -6,10 +6,21 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
     public class Turn
     {
         private const int k_GuessSize = 4;
+        private static Turn sr_HiddenSequenceTemplate;
+        private static Turn sr_EmptySequenceTemplate;
         private static char[] s_correctSequence = new char[k_GuessSize];
         private char[] m_guess;
         private eHitOptions m_bulls;
         private eHitOptions m_cows;
+
+        static Turn()
+        {
+            char[] hiddenSequenceValues = new char[k_GuessSize] { '#', '#', '#', '#' };
+            char[] emptySequenceValues = new char[k_GuessSize] { ' ', ' ', ' ', ' ' };
+            sr_HiddenSequenceTemplate = new Turn(hiddenSequenceValues);
+            sr_EmptySequenceTemplate = new Turn(emptySequenceValues);
+
+        }
 
         public static char[] CorrectSequence
         {
@@ -60,7 +71,9 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
             m_cows = 0;
             inferBullsAndCows();
         }
-
+        
+        public Turn(string i_Guess):this(i_Guess.ToCharArray()){ }                          
+        
         private void inferBullsAndCows()
         {
             for (int i = 0; i < k_GuessSize; i++)
@@ -94,9 +107,11 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
         private static bool isValidSequence(char[] i_Guess)
         {
             bool result = i_Guess.Length == k_GuessSize;
-            for(int i = 0; i < i_Guess.Length; i++)
+            List<char> takenLetters = new List<char>();
+            foreach (char character in i_Guess)
             {
-                result = result && char.IsLetter(i_Guess[i]);
+                result = result && char.IsLetter(character) && !takenLetters.Contains(character);
+                takenLetters.Add(character);
             }
             
             return result;
@@ -107,11 +122,15 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
             return TurnStringifier.ToString(m_guess, m_bulls, m_cows);
         }
         
-        public static string GetHiddenSequenceString()                                     
-        {                                                                            
-            char[] hiddenSequence = new char[] { '#', '#', '#', '#'};  
-            return TurnStringifier.ToString(hiddenSequence, eHitOptions.FourHits, eHitOptions.NoHit);
-        }                                                                            
+        public static string GetHiddenSequenceTemplate()
+        {
+            return sr_HiddenSequenceTemplate.ToString();
+        }        
+        
+        public static string GetEmptySequenceTemplate()
+        {
+            return sr_EmptySequenceTemplate.ToString();
+        }                                             
 
         private class TurnStringifier
         {
@@ -143,19 +162,28 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
             { 
                 const string k_Space = " ";
                 StringBuilder GuessOutcomeAsString = new StringBuilder("",k_ToStringBufferSize);
-                
-                for (eHitOptions i = 0; i < i_Cows; i++)
+
+                eHitOptions j = eHitOptions.NoHit;
+                for (eHitOptions i = eHitOptions.NoHit; i < i_Cows; i++)
                 {
                     GuessOutcomeAsString.Append(k_Space);
                     GuessOutcomeAsString.Append(k_CowSign);
+                    j++;
                 }
                 
-                for (eHitOptions i = 0; i < i_Bulls; i++)                  
+                for (eHitOptions i = eHitOptions.NoHit; i < i_Bulls; i++)                  
                 {                                                          
                     GuessOutcomeAsString.Append(k_Space);                  
-                    GuessOutcomeAsString.Append(k_BullSign);               
+                    GuessOutcomeAsString.Append(k_BullSign);
+                    j++;
                 }
+                
+                for (; j < eHitOptions.FourHits; j++)   
+                {                                           
+                    GuessOutcomeAsString.Append(k_Space);   
+                    GuessOutcomeAsString.Append(k_Space);   
 
+                }                                           
                 GuessOutcomeAsString.Append(k_Space);
                 
                 return GuessOutcomeAsString.ToString();
