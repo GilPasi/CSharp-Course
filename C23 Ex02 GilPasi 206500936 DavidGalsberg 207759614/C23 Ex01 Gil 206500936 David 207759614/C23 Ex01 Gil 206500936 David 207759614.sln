@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exe02_01", "Exe02_01\Exe02_01.csproj", "{A0E3EE02-606F-4CA3-939A-135A54C64716}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ex02_01", "Ex02_01\Ex02_01.csproj", "{A0E3EE02-606F-4CA3-939A-135A54C64716}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
