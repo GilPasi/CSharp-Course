@@ -8,4 +8,9 @@
         <RootNamespace>Exe02_01</RootNamespace>
     </PropertyGroup>
 
+
+    <ItemGroup>
+      <Compile Remove="FixedList.cs" />
+    </ItemGroup>
+
 </Project>

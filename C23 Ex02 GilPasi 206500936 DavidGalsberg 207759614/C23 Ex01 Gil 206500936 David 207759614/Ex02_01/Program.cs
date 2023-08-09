@@ -4,14 +4,7 @@ public class Program
 {
     public static void Main()
     {
-        GameBoard.WelcomePlayer();
-        uint maxGuessesCount = GameBoard.GetValidGuessesCount();
-        GameBoard game = new GameBoard(maxGuessesCount);
-        game.PrintCurrentState();
-        char[] guess = GameBoard.GetValidGuess();
-        game.AddTurn(new Turn(guess));
-        game.AddTurn(new Turn(guess));
-
-        game.PrintCurrentState();
+        GameManager gameManager = new GameManager();
+        gameManager.Initiate();
     }
 }

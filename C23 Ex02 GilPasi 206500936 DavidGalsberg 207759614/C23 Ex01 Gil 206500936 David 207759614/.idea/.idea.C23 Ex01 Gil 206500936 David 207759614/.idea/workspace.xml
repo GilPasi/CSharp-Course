@@ -8,6 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de2a1869-da85-4072-9fe2-12574fd970c4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Ex02_01/GameControl.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Ex02_01/GameManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Ex02_01/eGameStatus.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../C23 Ex01/C23 Ex01 Gil 206500936 David 207759614.sln" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../C23 Ex01/Ex01_01/Ex01_01.csproj" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../C23 Ex01/Ex01_01/Program.cs" beforeDir="false" />
@@ -21,6 +24,11 @@
       <change beforePath="$PROJECT_DIR$/../../C23 Ex01/Ex01_05/Program.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../C23 Ex01/Ex01_ScreenShots.pages" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../C23 Ex01/Exe01_Theory.pages" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.C23 Ex01 Gil 206500936 David 207759614/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.C23 Ex01 Gil 206500936 David 207759614/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ex02_01/Ex02_01.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Ex02_01/Ex02_01.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ex02_01/GameBoard.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Ex02_01/GameBoard.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ex02_01/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Ex02_01/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ex02_01/Turn.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Ex02_01/Turn.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,40 +40,44 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/../../C23 Ex01 GilPasi 206500936 DavidGalsberg 207759614/Ex01_01/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Ex02_01/FixedList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Ex02_01/GameBoard.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Ex02_01/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/38a3a9e4184a07382d191011bb88d3d744d36f7397f2fe1b166e948a26ce/Queue.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8a64444e2c1299f5a9ffffc5564cdfb885cb47c7ae6c5c3c1a6a3a79621e397/Char.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d4f98ebdd878db4fbd98872756eb7be6ad9e468fe5cd6b16385d8c4993109a/List.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f5c91a4e763c87be26c15bebe4d88282a597d575896c0cb67bdb26925d7ef64/Array.CoreCLR.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4
-}]]></component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2TYTHYa9KZZG6kY7VAkucoNqwlY" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "/Users/gilpasi/Library/Application Support/JetBrains/Rider2023.2/resharper-host/DecompilerCache",
-      "/Users/gilpasi/Library/Application Support/JetBrains/Rider2023.2/resharper-host/SourcesCache",
-      "/Users/gilpasi/.local/share/Symbols/src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;/Users/gilpasi/Library/Application Support/JetBrains/Rider2023.2/resharper-host/DecompilerCache&quot;,
+      &quot;/Users/gilpasi/Library/Application Support/JetBrains/Rider2023.2/resharper-host/SourcesCache&quot;,
+      &quot;/Users/gilpasi/.local/share/Symbols/src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Exe02_01" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -94,13 +106,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1691218927094</updated>
-      <workItem from="1691218930392" duration="35920000" />
+      <workItem from="1691218930392" duration="38621000" />
+      <workItem from="1691421250642" duration="21025000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
@@ -109,16 +123,42 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Ex02_01/GameBoard.cs</url>
-          <line>93</line>
-          <properties documentPath="$PROJECT_DIR$/Ex02_01/GameBoard.cs" initialLine="89" containingFunctionPresentation="Method 'GetValidGuess'">
+          <line>119</line>
+          <properties documentPath="$PROJECT_DIR$/Ex02_01/GameBoard.cs" initialLine="154" containingFunctionPresentation="Method 'TurnToString'">
             <startOffsets>
-              <option value="3903" />
+              <option value="4218" />
             </startOffsets>
             <endOffsets>
-              <option value="3904" />
+              <option value="4219" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="10" />
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Ex02_01/GameBoard.cs</url>
+          <line>33</line>
+          <properties documentPath="$PROJECT_DIR$/Ex02_01/GameBoard.cs" initialLine="51" containingFunctionPresentation="Method 'PrintCurrentState'">
+            <startOffsets>
+              <option value="1303" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1336" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Ex02_01/GameBoard.cs</url>
+          <line>19</line>
+          <properties documentPath="$PROJECT_DIR$/Ex02_01/GameBoard.cs" initialLine="33" containingFunctionPresentation="Method 'PrintCurrentState'">
+            <startOffsets>
+              <option value="740" />
+            </startOffsets>
+            <endOffsets>
+              <option value="783" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

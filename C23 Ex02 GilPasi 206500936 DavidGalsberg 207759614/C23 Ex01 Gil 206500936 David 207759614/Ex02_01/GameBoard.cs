@@ -1,4 +1,3 @@
-using System.Net;
 using System.Text;
 namespace sapir_c23_dn_course_gil_and_david.Ex02_01
 {
@@ -6,94 +5,78 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
     {
         private const string k_verticalDelimiter = "|";
         private const string k_horizonalDelimiter = "|=========|=========|";
-        private const int k_QunatityOfNeededCharactersForPrintingOneTurn = 50;
-        const string k_QuitMessage = "Q";
-        private const int k_GuessSize = 4;
+        private const string k_QuitMessage = "Q";
+        private static readonly string sr_emptySequence;
+        private static readonly string sr_hiddenSequence;
 
-        private  readonly uint r_CurrentStateAsStringSize;
-        private StringBuilder m_currentStateAsString;
-        private List <Turn> m_historyTurns = new List<Turn>();
-        private readonly uint r_maxTries;
-
-        public GameBoard(uint i_MaxTries)
+        static GameBoard()
         {
-            r_maxTries = i_MaxTries;
-            r_CurrentStateAsStringSize = (1 + i_MaxTries) * k_QunatityOfNeededCharactersForPrintingOneTurn;
-            m_currentStateAsString = new StringBuilder((int)r_CurrentStateAsStringSize);
+            sr_hiddenSequence = string.Format("{0} # # # # {0}         {0}", k_verticalDelimiter);
+            sr_emptySequence =  string.Format("{0}         {0}         {0}", k_verticalDelimiter);
         }
-
-        public void AddTurn(Turn i_NewTurn)
+        
+        public static void PrintState(List<Turn>  i_Turns)
         {
-            m_historyTurns.Add(i_NewTurn);
-        }
-
-        public void PrintCurrentState()
-        {
-            m_currentStateAsString.Append(string.Format("Current board status:{0}", Environment.NewLine));
-            m_currentStateAsString.Append(string.Format("{0}Pins:    {0}Result:  {0}{1}",k_verticalDelimiter, Environment.NewLine));
-            m_currentStateAsString.Append(string.Format("{0}{1}", k_horizonalDelimiter, Environment.NewLine));
-            m_currentStateAsString.Append(string.Format("|{0}|{1}" ,Turn.GetHiddenSequenceTemplate(), Environment.NewLine));
-            m_currentStateAsString.Append(string.Format("{0}{1}", k_horizonalDelimiter, Environment.NewLine));
+            Console.WriteLine("Current board status:");
+            Console.WriteLine("{0}Pins:    {0}Result:  {0}",k_verticalDelimiter);
+            Console.WriteLine(k_horizonalDelimiter);
+            Console.WriteLine(sr_hiddenSequence);
+            Console.WriteLine(k_horizonalDelimiter);
 
             int i = 0;
-            foreach (Turn passedTurn in m_historyTurns)
+            foreach (Turn passedTurn in i_Turns)
             {
-                m_currentStateAsString.Append(string.Format("|{0}|{1}" ,passedTurn.ToString(), Environment.NewLine));
+                Console.WriteLine(TurnStringifier.TurnToString(passedTurn));
+                Console.WriteLine(k_horizonalDelimiter);
                 i++;
             }
-
-            for (; i < r_maxTries; i++)
+            
+            for (; i < i_Turns.Capacity; i++)
             {
-                m_currentStateAsString.Append(string.Format("|{0}|{1}{2}{1}"
-                    ,Turn.GetEmptySequenceTemplate(), Environment.NewLine, k_horizonalDelimiter));
+                Console.WriteLine(sr_emptySequence);
+                Console.WriteLine(k_horizonalDelimiter);
             }
-
-            Console.WriteLine(m_currentStateAsString.ToString());
         }
 
         public static void WelcomePlayer()
         {
             Console.WriteLine("Welcome to bulls and cows!٩(^‿^)۶");
             Console.WriteLine("Restrictions:");
-            Console.WriteLine("1.Every guess must have exactly {0} characters",k_GuessSize);
+            Console.WriteLine("1.Every guess must have exactly {0} characters",GameControl.k_GuessSize);
             Console.WriteLine("2.No letter may repeat itself");
             Console.WriteLine("3.At any moment, enter 'Q' to quit");
         }
 
-        public static uint GetValidGuessesCount()
+        public static uint GetSyntacticallyValidGuessesCount(char i_BottomBound, char i_TopBound)
         {
             int parsedUserChoice;
             string userChoice;
-            const int k_LowerBound = 4, k_UpperBound = 8;
-            bool syntacticValidity, pragmaticValidity;
+            bool isValid;
             do
             {
-                Console.WriteLine("Please enter a the requested guess count in range {0}-{1}", k_LowerBound, k_UpperBound);
+                Console.WriteLine("Please enter a the requested guesses count in range {0}-{1}",i_BottomBound ,i_TopBound);
                 userChoice = Console.ReadLine();
                 if (userChoice.ToUpper() == k_QuitMessage)
                 {
                     abandonGame();
                 }
 
-                syntacticValidity = int.TryParse(userChoice, out parsedUserChoice);
-                pragmaticValidity = parsedUserChoice <= k_UpperBound && parsedUserChoice >= k_LowerBound;
-                if (!syntacticValidity)
+                isValid = int.TryParse(userChoice,  out parsedUserChoice);
+
+                if (!isValid)
                 {
-                    Console.WriteLine("This input is not an integer");
+                    Console.WriteLine("This is not a number");
                 }
-                else if (!pragmaticValidity)
-                {
-                    Console.WriteLine("This number is not in range");
-                }
-            } while (!(syntacticValidity && pragmaticValidity));
+
+            } while (!isValid);
             
             return (uint)parsedUserChoice;
         }
 
-        public static char[] GetValidGuess()
+        public static char[] GetSyntacticallyValidGuess()
         {
             string userGuess;
-            bool syntacticValidity,pragmaticValidity;
+            bool syntacticValidity;
             do
             {
                 Console.WriteLine("Try to guess the sequence:");
@@ -103,30 +86,18 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
                     abandonGame();
                 }
 
-                pragmaticValidity = userGuess.Length == k_GuessSize;
                 syntacticValidity = true;
-                List<char> takenChars = new List<char>();
+                
                 foreach (char character in userGuess)
                 {
                     syntacticValidity = syntacticValidity && char.IsLetter(character);
-                    pragmaticValidity = !takenChars.Contains(character);
-                    if (pragmaticValidity)
-                    {
-                        takenChars.Add(character);
-                    }
                 }
                 if(!syntacticValidity)
                 {
                     Console.WriteLine("Your guess contains none alphabetical characters");
                 }
-
-                if (!pragmaticValidity)
-                {
-                    Console.WriteLine("Your guess has incorrect length or repeating characters");
-                }
-
-
-            } while (!(pragmaticValidity && syntacticValidity));
+                
+            } while (!syntacticValidity);
             
             return userGuess.ToCharArray();
         }
@@ -138,6 +109,73 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
 
         }
 
+        private class TurnStringifier
+        {
+            const string k_Space = " ";
+            private const string k_BullSign = "X";
+            private const string k_CowSign = "V";
+            private const int k_QunatityOfNeededCharactersForPrintingOneTurn = 50;
+            
+            public static string TurnToString(Turn i_Turn)
+            {
+                return string.Format("{0}{1}{0}{2}{0}", k_verticalDelimiter,
+                    guessToString(i_Turn.Guess), guessOutcomeToString(i_Turn.Bulls, i_Turn.Cows));
+            }
+
+            private static string guessToString(char[] i_Guess)
+            { 
+                StringBuilder guessAsString = new StringBuilder("",k_QunatityOfNeededCharactersForPrintingOneTurn);
+
+                for (int i = 0; i < GameControl.k_GuessSize; i++)
+                {
+                    guessAsString.Append(k_Space);
+                    guessAsString.Append(i_Guess[i]);
+                }
+                guessAsString.Append(k_Space);
+
+                return guessAsString.ToString();
+            }
+
+            private static string guessOutcomeToString(eHitOptions i_Bulls, eHitOptions i_Cows)
+            { 
+                const string k_Space = " ";
+                StringBuilder GuessOutcomeAsString = new StringBuilder("",k_QunatityOfNeededCharactersForPrintingOneTurn);
+
+                eHitOptions j = eHitOptions.NoHit;
+                for (eHitOptions i = eHitOptions.NoHit; i < i_Cows; i++)
+                {
+                    GuessOutcomeAsString.Append(k_Space);
+                    GuessOutcomeAsString.Append(k_CowSign);
+                    j++;
+                }
+                
+                for (eHitOptions i = eHitOptions.NoHit; i < i_Bulls; i++)                  
+                {                                                          
+                    GuessOutcomeAsString.Append(k_Space);                  
+                    GuessOutcomeAsString.Append(k_BullSign);
+                    j++;
+                }
+                
+                for (; j < eHitOptions.FourHits; j++)   
+                {                                           
+                    GuessOutcomeAsString.Append(k_Space);   
+                    GuessOutcomeAsString.Append(k_Space);   
+
+                }                                           
+                GuessOutcomeAsString.Append(k_Space);
+                
+                return GuessOutcomeAsString.ToString();
+            }
+        }
+        public static void InformDefeat()
+        {
+            Console.WriteLine("You are out of tries! maybe next time (ㅠ﹏ㅠ)");
+        }
+            
+        public static void InformVictory()
+        {
+            Console.WriteLine("Congratiolations! You got it!");
+        }
     }
 }
 
