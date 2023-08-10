@@ -1,5 +1,6 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
-namespace sapir_c23_dn_course_gil_and_david.Ex02_01
+namespace Ex02_01
 {
     public class GameBoard
     {
@@ -11,19 +12,31 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
 
         static GameBoard()
         {
-            sr_hiddenSequence = string.Format("{0} # # # # {0}         {0}", k_verticalDelimiter);
-            sr_emptySequence =  string.Format("{0}         {0}         {0}", k_verticalDelimiter);
+            sr_hiddenSequence = string.Format("{0} # # # # {0}         {0}",
+                k_verticalDelimiter);
+            sr_emptySequence =  string.Format("{0}         {0}         {0}",
+                k_verticalDelimiter);
         }
-        
-        public static void PrintState(List<Turn>  i_Turns)
+
+        public static void PrintState(List<Turn> i_Turns, string i_CorrectSequence = null)
         {
+            int i;
+            
             Console.WriteLine("Current board status:");
             Console.WriteLine("{0}Pins:    {0}Result:  {0}",k_verticalDelimiter);
             Console.WriteLine(k_horizonalDelimiter);
-            Console.WriteLine(sr_hiddenSequence);
-            Console.WriteLine(k_horizonalDelimiter);
+            if (i_CorrectSequence == null)
+                //Meaning no string was sent as a parameter
+            {
+                Console.WriteLine(sr_hiddenSequence);
+            }
+            else
+            {
+                Console.WriteLine(i_CorrectSequence);
+            }
 
-            int i = 0;
+            Console.WriteLine(k_horizonalDelimiter);
+            i = 0;
             foreach (Turn passedTurn in i_Turns)
             {
                 Console.WriteLine(TurnStringifier.TurnToString(passedTurn));
@@ -37,12 +50,12 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
                 Console.WriteLine(k_horizonalDelimiter);
             }
         }
-
+        
         public static void WelcomePlayer()
         {
             Console.WriteLine("Welcome to bulls and cows!٩(^‿^)۶");
             Console.WriteLine("Restrictions:");
-            Console.WriteLine("1.Every guess must have exactly {0} characters",GameControl.k_GuessSize);
+            Console.WriteLine("1.Every guess must have exactly {0} characters",GameControl.GuessSize);
             Console.WriteLine("2.No letter may repeat itself");
             Console.WriteLine("3.At any moment, enter 'Q' to quit");
         }
@@ -52,6 +65,7 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
             int parsedUserChoice;
             string userChoice;
             bool isValid;
+            
             do
             {
                 Console.WriteLine("Please enter a the requested guesses count in range {0}-{1}",i_BottomBound ,i_TopBound);
@@ -77,6 +91,7 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
         {
             string userGuess;
             bool syntacticValidity;
+            
             do
             {
                 Console.WriteLine("Try to guess the sequence:");
@@ -87,16 +102,15 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
                 }
 
                 syntacticValidity = true;
-                
                 foreach (char character in userGuess)
                 {
                     syntacticValidity = syntacticValidity && char.IsLetter(character);
                 }
+                
                 if(!syntacticValidity)
                 {
                     Console.WriteLine("Your guess contains none alphabetical characters");
                 }
-                
             } while (!syntacticValidity);
             
             return userGuess.ToCharArray();
@@ -105,11 +119,20 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
         public static void abandonGame()
         {
             Console.WriteLine("	＼(＾O＾)／  Thank you for playing! Bye!  ＼(＾O＾)／");
-            System.Environment.Exit(0);  
-
+            System.Environment.Exit(0);
+        }
+        
+        public static void InformDefeat()
+        {
+            Console.WriteLine("You are out of tries! maybe next time (ㅠ﹏ㅠ)");
+        }
+            
+        public static void InformVictory()
+        {
+            Console.WriteLine("Congratulations! You got it! (⌒ ▽ ⌒)");
         }
 
-        private class TurnStringifier
+        internal class TurnStringifier
         {
             const string k_Space = " ";
             private const string k_BullSign = "X";
@@ -126,7 +149,7 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
             { 
                 StringBuilder guessAsString = new StringBuilder("",k_QunatityOfNeededCharactersForPrintingOneTurn);
 
-                for (int i = 0; i < GameControl.k_GuessSize; i++)
+                for (int i = 0; i < GameControl.GuessSize; i++)
                 {
                     guessAsString.Append(k_Space);
                     guessAsString.Append(i_Guess[i]);
@@ -138,10 +161,9 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
 
             private static string guessOutcomeToString(eHitOptions i_Bulls, eHitOptions i_Cows)
             { 
-                const string k_Space = " ";
                 StringBuilder GuessOutcomeAsString = new StringBuilder("",k_QunatityOfNeededCharactersForPrintingOneTurn);
-
                 eHitOptions j = eHitOptions.NoHit;
+                
                 for (eHitOptions i = eHitOptions.NoHit; i < i_Cows; i++)
                 {
                     GuessOutcomeAsString.Append(k_Space);
@@ -161,20 +183,12 @@ namespace sapir_c23_dn_course_gil_and_david.Ex02_01
                     GuessOutcomeAsString.Append(k_Space);   
                     GuessOutcomeAsString.Append(k_Space);   
 
-                }                                           
+                }  
+                
                 GuessOutcomeAsString.Append(k_Space);
                 
                 return GuessOutcomeAsString.ToString();
             }
-        }
-        public static void InformDefeat()
-        {
-            Console.WriteLine("You are out of tries! maybe next time (ㅠ﹏ㅠ)");
-        }
-            
-        public static void InformVictory()
-        {
-            Console.WriteLine("Congratiolations! You got it!");
         }
     }
 }
