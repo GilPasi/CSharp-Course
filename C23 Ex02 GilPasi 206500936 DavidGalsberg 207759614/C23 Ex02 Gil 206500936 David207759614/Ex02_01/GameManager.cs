@@ -73,12 +73,12 @@ namespace Ex02_01
         {
             bool inputIsPragmaticallyValid;
             char[] userGuess;
-            bool userWantToKeepPlaying;
+            bool userWantToQuit;
 
             do
             {
-                userGuess = GameBoard.GetSyntacticallyValidGuess(out userWantToKeepPlaying);
-                 referUserQuit(userWantToKeepPlaying);
+                userGuess = GameBoard.GetSyntacticallyValidGuess(out userWantToQuit);
+                 referUserQuit(userWantToQuit);
                 inputIsPragmaticallyValid = GameControl.CheckIfPragmaticallyValidSequence(userGuess);
 
                 if (!inputIsPragmaticallyValid)
