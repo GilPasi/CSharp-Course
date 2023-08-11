@@ -52,7 +52,7 @@ namespace Ex02_01
         }
         
         public static uint GetSyntacticallyValidGuessesCount(int i_BottomBound,
-            int i_TopBound, out bool i_UserWantToQuit)
+            int i_TopBound, out bool o_UserWantToKeepPlaying)
         {
             int parsedUserChoice = 0;
             string userChoice;
@@ -62,20 +62,20 @@ namespace Ex02_01
             {
                 Console.WriteLine("Please enter a the requested guesses count in range {0}-{1}",i_BottomBound ,i_TopBound);
                 userChoice = Console.ReadLine();
-                i_UserWantToQuit = userChoice.ToUpper() == k_QuitMessage;
+                o_UserWantToKeepPlaying = userChoice.ToUpper() != k_QuitMessage;
                 isValid = int.TryParse(userChoice,  out parsedUserChoice);
-                if (!isValid && !i_UserWantToQuit)
+                if (!isValid && o_UserWantToKeepPlaying)
                 {
                     Console.WriteLine("This is not a number");
                 }
             } 
             
-            while (!isValid && !i_UserWantToQuit);
+            while (!isValid && o_UserWantToKeepPlaying);
             
             return (uint)parsedUserChoice;
         }
 
-        public static char[] GetSyntacticallyValidGuess(out bool o_UserWantToQuit)
+        public static char[] GetSyntacticallyValidGuess(out bool o_UserWantToKeepPlaying)
         {
             string userGuess;
             bool syntacticValidity;
@@ -85,21 +85,20 @@ namespace Ex02_01
                 Console.WriteLine("Try to guess the sequence:");
                 userGuess = Console.ReadLine();
                 userGuess = formatStringAsCapitalsWithNoSpaces(userGuess);
-                o_UserWantToQuit = userGuess == k_QuitMessage;
-                
+                o_UserWantToKeepPlaying = userGuess != k_QuitMessage;
                 syntacticValidity = true;
                 foreach (char character in userGuess)
                 {
                     syntacticValidity = syntacticValidity && isLetterOneOfTheFirst8LettersInEnglish(character);
                 }
                 
-                if(!syntacticValidity && !o_UserWantToQuit)
+                if(!syntacticValidity && o_UserWantToKeepPlaying)
                 {
                     Console.WriteLine("Your guess contains characters that are not a-h letters");
                 }
             } 
             
-            while (!syntacticValidity && !o_UserWantToQuit);
+            while (!syntacticValidity && !o_UserWantToKeepPlaying);
             
             return userGuess.ToCharArray();
         }

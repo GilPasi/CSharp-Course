@@ -1,14 +1,15 @@
 namespace Ex02_01
 {
-    /*Architeture choice: splitting the game logic into two sections:
-     1. Game Control
-     2. Game Manager
+    /*Architecture choice: splitting the game UI into two sections:
+     1. Game Manager
+     2. Game Board
      
-     The Game Control class is an aggregation of all the data and actions of the game.
-     Nevertheless The GameControl is not independent and it does not drive the game.
-     On the other hand the Game Manager is the class that drives the whole game.It has
-     to manage different resources and methods. For this reason, any action that involves both 
-     business logic and UI will be executed here.*/
+     The Game Board class aggregate all the passive user-interface mechanisms.
+     Meaning it is not independent and can be activated upon the Game manager's need.
+     In other words the GameBoard act as an "improved console" and oriented to the Bulls & Cows game.
+     The Game Manager class is somewhat an independent entity that drives the whole game.It has a completely 
+     different role and it provide a high level blueprint of the game.
+      */
     public class GameManager
     {
         private GameControl m_controller;
@@ -17,7 +18,7 @@ namespace Ex02_01
         {
             eGameStatus currentStatus;
             uint validGuessCount;
-            
+            bool userWantToKeepPlaying;
             GameBoard.WelcomePlayer();
             validGuessCount = getValidGuessesCount();
             m_controller = new GameControl(validGuessCount);
@@ -25,31 +26,29 @@ namespace Ex02_01
 
             do
             {
-                playTurn();
+                playTurn(out userWantToKeepPlaying);
                 currentStatus = m_controller.EvaluateGameStatus();
             }
             
-            while (currentStatus == eGameStatus.Ongoing);
+            while (currentStatus == eGameStatus.Ongoing && userWantToKeepPlaying);
             finishGame();
         }
 
-        private void playTurn()
+        private void playTurn(out bool o_UserWantToKeepPlaying)
         {
             char[] validGuess;
 
             GameBoard.GeneralMessage("Please type your next guess <A B C D> or 'Q' to Quit");
-            validGuess = getValidGuess();
+            validGuess = getValidGuess(out o_UserWantToKeepPlaying);
             m_controller.AddTurn(validGuess);
             GameBoard.PrintState(m_controller.TurnsHistory);
-
         }
         
-        private void referPlayerQuit(bool i_PlayerWantToQuit)
+        private void referPlayerQuit(bool i_PlayerWantToKeepPlaying)
         {
-            if (i_PlayerWantToQuit)
+            if (! i_PlayerWantToKeepPlaying)
             {
                 GameBoard.InformUserAboutQuit();
-                GameControl.AbandonGame();
             }
         }
 
@@ -73,21 +72,16 @@ namespace Ex02_01
             }
         }
         
-        private char[] getValidGuess()
+        private char[] getValidGuess(out bool o_UserWantToKeepPlaying)
         {
             bool inputIsPragmaticallyValid;
             char[] userGuess;
-            bool playerWantToQuit;
 
             do
             {
-                userGuess = GameBoard.GetSyntacticallyValidGuess(out playerWantToQuit);
-                referPlayerQuit(playerWantToQuit);
+                userGuess = GameBoard.GetSyntacticallyValidGuess(out o_UserWantToKeepPlaying);
+                referPlayerQuit(!o_UserWantToKeepPlaying);
                 inputIsPragmaticallyValid = GameControl.CheckIfPragmaticallyValidSequence(userGuess);
-                if (playerWantToQuit)
-                {
-                    GameControl.AbandonGame();
-                }
 
                 if (!inputIsPragmaticallyValid)
                 {
