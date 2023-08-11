@@ -51,8 +51,8 @@ namespace Ex02_01
             }
         }
         
-        public static uint GetSyntacticallyValidGuessesCount(char i_BottomBound,
-            char i_TopBound, out bool i_UserWantToQuit)
+        public static uint GetSyntacticallyValidGuessesCount(int i_BottomBound,
+            int i_TopBound, out bool i_UserWantToQuit)
         {
             int parsedUserChoice = 0;
             string userChoice;
@@ -75,7 +75,7 @@ namespace Ex02_01
             return (uint)parsedUserChoice;
         }
 
-        public static char[] GetSyntacticallyValidGuess(out bool o_PlayerWantToQuit)
+        public static char[] GetSyntacticallyValidGuess(out bool o_UserWantToQuit)
         {
             string userGuess;
             bool syntacticValidity;
@@ -84,28 +84,44 @@ namespace Ex02_01
             {
                 Console.WriteLine("Try to guess the sequence:");
                 userGuess = Console.ReadLine();
-                o_PlayerWantToQuit = userGuess.ToUpper() == k_QuitMessage;
+                userGuess = formatStringAsCapitalsWithNoSpaces(userGuess);
+                o_UserWantToQuit = userGuess == k_QuitMessage;
                 
                 syntacticValidity = true;
                 foreach (char character in userGuess)
                 {
-                    syntacticValidity = syntacticValidity && char.IsLetter(character);
+                    syntacticValidity = syntacticValidity && isLetterOneOfTheFirst8LettersInEnglish(character);
                 }
                 
-                if(!syntacticValidity && !o_PlayerWantToQuit)
+                if(!syntacticValidity && !o_UserWantToQuit)
                 {
-                    Console.WriteLine("Your guess contains none alphabetical characters");
+                    Console.WriteLine("Your guess contains characters that are not a-h letters");
                 }
             } 
             
-            while (!syntacticValidity && !o_PlayerWantToQuit);
+            while (!syntacticValidity && !o_UserWantToQuit);
             
             return userGuess.ToCharArray();
         }
-        
+
+        private static bool isLetterOneOfTheFirst8LettersInEnglish(char i_Letter)
+        {
+            return i_Letter >= 'A' && i_Letter <= 'H';
+        }
+
+        private static string formatStringAsCapitalsWithNoSpaces(string i_String)
+        {
+            return i_String.Replace(" ", string.Empty).ToUpper();
+        }
+
         public static void WelcomePlayer()
         {
-            Console.WriteLine("Welcome to bulls and cows!(^‿^)");
+            Console.WriteLine("Welcome to bulls and cows!");
+            Console.WriteLine(@"
+                ((...))         ((...))         ((...))           L...L  
+                ( o o )         ( x x )         ( O O )          < o o >
+                 \   /           \   /           \   /            \   /
+                  ^_^             ^_^            (`_`)             ^_^  ");
             Console.WriteLine("Restrictions:");
             Console.WriteLine("1.Every guess must have exactly {0} characters",GameControl.GuessSize);
             Console.WriteLine("2.No letter may repeat itself");
@@ -142,8 +158,8 @@ namespace Ex02_01
         internal class TurnStringifier
         {
             const string k_Space = " ";
-            private const string k_BullSign = "X";
-            private const string k_CowSign = "V";
+            private const string k_BullSign = "V";
+            private const string k_CowSign = "X";
             private const int k_QunatityOfNeededCharactersForPrintingOneTurn = 50;
             
             public static string TurnToString(Turn i_Turn)

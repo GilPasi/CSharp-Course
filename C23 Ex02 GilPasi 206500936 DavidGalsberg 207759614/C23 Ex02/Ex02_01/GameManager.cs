@@ -26,9 +26,7 @@ namespace Ex02_01
             do
             {
                 playTurn();
-                GameBoard.PrintState(m_controller.TurnsHistory);
                 currentStatus = m_controller.EvaluateGameStatus();
-
             }
             
             while (currentStatus == eGameStatus.Ongoing);
@@ -39,9 +37,11 @@ namespace Ex02_01
         {
             char[] validGuess;
 
-            GameBoard.GeneralMessage("Please type your next guess <ABCD> or 'Q' to Quit");
+            GameBoard.GeneralMessage("Please type your next guess <A B C D> or 'Q' to Quit");
             validGuess = getValidGuess();
             m_controller.AddTurn(validGuess);
+            GameBoard.PrintState(m_controller.TurnsHistory);
+
         }
         
         private void referPlayerQuit(bool i_PlayerWantToQuit)
@@ -105,11 +105,11 @@ namespace Ex02_01
         {
             uint guessesCount;
             bool guessesCountIsPragmaticallyValid;
-            const char bottomBound = '4', topBound = '8';
             
             do
             {
-                guessesCount = GameBoard.GetSyntacticallyValidGuessesCount(bottomBound, topBound, out bool playerWantToQuit);
+                guessesCount = GameBoard.GetSyntacticallyValidGuessesCount(GameControl.MinimumGuessesCount,
+                    GameControl.MaximumGuessesCount, out bool playerWantToQuit);
                 referPlayerQuit(playerWantToQuit);
                 guessesCountIsPragmaticallyValid = GameControl.CheckIfPragmaticallyValidGuessesCount(guessesCount);
                 if (!guessesCountIsPragmaticallyValid)

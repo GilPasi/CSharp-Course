@@ -5,7 +5,29 @@ namespace Ex02_01
         private readonly char[] r_correctSequence;
         private List<Turn> m_turnsHistory;
         private const int k_GuessSize = 4;
+        private const int k_MinimumGuessesCount = 4,k_MaximumGuessesCount = 10;
 
+        public static int MinimumGuessesCount 
+        {
+            get
+            {
+                return k_MinimumGuessesCount;
+            }
+        }
+        public static int MaximumGuessesCount 
+        {
+            get
+            {
+                return k_MaximumGuessesCount;
+            }
+        }
+
+        public GameControl(uint i_MaxGuessesCount)
+        {
+            m_turnsHistory = new List<Turn>((int)i_MaxGuessesCount);
+            r_correctSequence = generateSequence();
+        }
+        
         public static int GuessSize
         {
             get
@@ -29,12 +51,6 @@ namespace Ex02_01
                 return r_correctSequence;
             }
         }
-        
-        public GameControl(uint i_MaxGuessesCount)
-        {
-            m_turnsHistory = new List<Turn>((int)i_MaxGuessesCount);
-            r_correctSequence = generateSequence();
-        }
 
         public static char[] generateSequence()
         {
@@ -43,7 +59,7 @@ namespace Ex02_01
 
             for (int i = 0; i < k_GuessSize; i++)
             {
-                randomSequence[i] = (char)random.Next('a', 'z');
+                randomSequence[i] = (char)random.Next('A', 'H');
             }
 
             if (!CheckIfPragmaticallyValidSequence(randomSequence))
@@ -72,9 +88,7 @@ namespace Ex02_01
 
         public static bool CheckIfPragmaticallyValidGuessesCount(uint i_CountOfGuesses)
         {
-            const int k_BottomBound = 4, k_TopBound = 8;
-            
-            return i_CountOfGuesses >= k_BottomBound && i_CountOfGuesses <= k_TopBound;
+            return i_CountOfGuesses >= k_MinimumGuessesCount && i_CountOfGuesses <= k_MaximumGuessesCount;
         }
 
         public void AddTurn(char[] i_Guess)
