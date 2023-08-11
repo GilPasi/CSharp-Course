@@ -1,8 +1,11 @@
-**/.vs/
-**/bin/
-**/obj/
-**/Properties/
-**/.DS_Store/
-**/.idea/
+*.vs
+
+*.DotSettings.use
+
+.idea
+
 .DS_Store
-.idea.C23 Ex01 Gil 206500936 David 207759614
+
+bin/
+
+obj/
