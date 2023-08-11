@@ -7,6 +7,7 @@ namespace Ex02_01
         private const string k_verticalDelimiter = "|";
         private const string k_horizonalDelimiter = "|=========|=========|";
         private const string k_QuitMessage = "Q";
+        private const string k_AgreementMessage = "Y";
         private static readonly string sr_emptySequence;
         private static readonly string sr_hiddenSequence;
 
@@ -60,9 +61,10 @@ namespace Ex02_01
             Console.WriteLine("3.At any moment, enter 'Q' to quit");
         }
 
-        public static uint GetSyntacticallyValidGuessesCount(char i_BottomBound, char i_TopBound)
+        public static uint GetSyntacticallyValidGuessesCount(char i_BottomBound,
+            char i_TopBound, out bool i_UserWantToQuit)
         {
-            int parsedUserChoice;
+            int parsedUserChoice = 0;
             string userChoice;
             bool isValid;
             
@@ -70,24 +72,20 @@ namespace Ex02_01
             {
                 Console.WriteLine("Please enter a the requested guesses count in range {0}-{1}",i_BottomBound ,i_TopBound);
                 userChoice = Console.ReadLine();
-                if (userChoice.ToUpper() == k_QuitMessage)
-                {
-                    abandonGame();
-                }
-
+                i_UserWantToQuit = userChoice.ToUpper() == k_QuitMessage;
                 isValid = int.TryParse(userChoice,  out parsedUserChoice);
-
-                if (!isValid)
+                if (!isValid && !i_UserWantToQuit)
                 {
                     Console.WriteLine("This is not a number");
                 }
-
-            } while (!isValid);
+            } 
+            
+            while (!isValid && !i_UserWantToQuit);
             
             return (uint)parsedUserChoice;
         }
 
-        public static char[] GetSyntacticallyValidGuess()
+        public static char[] GetSyntacticallyValidGuess(out bool o_PlayerWantToQuit)
         {
             string userGuess;
             bool syntacticValidity;
@@ -96,40 +94,45 @@ namespace Ex02_01
             {
                 Console.WriteLine("Try to guess the sequence:");
                 userGuess = Console.ReadLine();
-                if (userGuess.ToUpper() == k_QuitMessage)
-                {
-                    abandonGame();
-                }
-
+                o_PlayerWantToQuit = userGuess.ToUpper() == k_QuitMessage;
+                
                 syntacticValidity = true;
                 foreach (char character in userGuess)
                 {
                     syntacticValidity = syntacticValidity && char.IsLetter(character);
                 }
                 
-                if(!syntacticValidity)
+                if(!syntacticValidity && !o_PlayerWantToQuit)
                 {
                     Console.WriteLine("Your guess contains none alphabetical characters");
                 }
-            } while (!syntacticValidity);
+            } 
+            
+            while (!syntacticValidity && !o_PlayerWantToQuit);
             
             return userGuess.ToCharArray();
         }
-
-        public static void abandonGame()
-        {
-            Console.WriteLine("	＼(＾O＾)／  Thank you for playing! Bye!  ＼(＾O＾)／");
-            System.Environment.Exit(0);
-        }
         
-        public static void InformDefeat()
+        public static void InformUserAboutDefeat()
         {
             Console.WriteLine("You are out of tries! maybe next time (ㅠ﹏ㅠ)");
         }
             
-        public static void InformVictory()
+        public static void InformUserAboutVictory()
         {
             Console.WriteLine("Congratulations! You got it! (⌒ ▽ ⌒)");
+        }
+        
+        public static void InformUserAboutQuit()
+        {
+            Console.WriteLine("Thank you for playing! Bye!");
+        }
+
+        public static bool AskForAnotherRun()
+        {
+            Console.WriteLine("Would you like to start a new game? <Y/N>");
+
+            return Console.ReadLine().ToUpper() == k_AgreementMessage ;
         }
 
         internal class TurnStringifier

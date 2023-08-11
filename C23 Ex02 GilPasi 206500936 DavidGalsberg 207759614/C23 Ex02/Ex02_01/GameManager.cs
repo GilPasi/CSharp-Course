@@ -16,16 +16,17 @@ namespace Ex02_01
 
             do
             {
-                play();
+                playTurn();
                 GameBoard.PrintState(m_controller.TurnsHistory);
                 currentStatus = m_controller.EvaluateGameStatus();
 
-            }while (currentStatus == eGameStatus.Ongoing);
-
+            }
+            
+            while (currentStatus == eGameStatus.Ongoing);
             finishGame();
         }
 
-        private void play()
+        private void playTurn()
         {
             char[] validGuess;
             
@@ -38,11 +39,18 @@ namespace Ex02_01
         {
             bool inputIsPragmaticallyValid;
             char[] userGuess;
+            bool playerWantToQuit;
 
             do
             {
-                userGuess = GameBoard.GetSyntacticallyValidGuess();
+                userGuess = GameBoard.GetSyntacticallyValidGuess(out playerWantToQuit);
+                referPlayerQuit(playerWantToQuit);
                 inputIsPragmaticallyValid = GameControl.CheckIfPragmaticallyValidSequence(userGuess);
+                if (playerWantToQuit)
+                {
+                    GameControl.AbandonGame();
+                }
+
                 if (!inputIsPragmaticallyValid)
                 {
                     Console.WriteLine("This guess is not valid. A valid guess has exactly {0} none repeating letters",
@@ -57,33 +65,51 @@ namespace Ex02_01
         {
             uint guessesCount;
             bool guessesCountIsPragmaticallyValid;
+            const char bottomBound = '4', topBound = '8';
             
             do
             {
-                const char bottomBound = '4', topBound = '8';
-                guessesCount = GameBoard.GetSyntacticallyValidGuessesCount(bottomBound, topBound);
+                
+                guessesCount = GameBoard.GetSyntacticallyValidGuessesCount(bottomBound, topBound, out bool playerWantToQuit);
+                referPlayerQuit(playerWantToQuit);
                 guessesCountIsPragmaticallyValid = GameControl.CheckIfPragmaticallyValidGuessesCount(guessesCount);
                 if (!guessesCountIsPragmaticallyValid)
                 {
                     Console.WriteLine("This number is out of range");
                 }
-            } while (!guessesCountIsPragmaticallyValid);
+            } 
+            
+            while (!guessesCountIsPragmaticallyValid);
 
             return guessesCount;
         }
 
+        private void referPlayerQuit(bool i_PlayerWantToQuit)
+        {
+            if (i_PlayerWantToQuit)
+            {
+                GameBoard.InformUserAboutQuit();
+                GameControl.AbandonGame();
+            }
+        }
+
         private void finishGame()
         {
-            
+            //Treat the correct sequence as if it was a turn
             GameBoard.PrintState(m_controller.TurnsHistory, GameBoard.TurnStringifier.TurnToString(
-                new Turn(m_controller.CorrectSequence, null)));
+                new Turn(m_controller.CorrectSequence)));
             if (m_controller.EvaluateGameStatus() == eGameStatus.Defeat)
             {
-                GameBoard.InformDefeat();
+                GameBoard.InformUserAboutDefeat();
             }
             else
             {
-                GameBoard.InformVictory();
+                GameBoard.InformUserAboutVictory();
+            }
+
+            if (GameBoard.AskForAnotherRun())
+            {
+                Initiate();
             }
         }
     }

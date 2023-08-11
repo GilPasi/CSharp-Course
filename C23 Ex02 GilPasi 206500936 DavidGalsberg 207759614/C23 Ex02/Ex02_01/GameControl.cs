@@ -104,5 +104,17 @@ namespace Ex02_01
             
             return TurnsHistory[lastTurnIndex];
         }
+        
+        public static void AbandonGame()
+        {
+            /*Architecture choice: using Environment.Exit instead of breaking all loops:
+             Note that implicitly the game manager use 3 nested loops each turn:
+             InitiateGame() LOOP => play() => getValidGuess() LOOP => GetSyntacticallyValidGuess LOOP
+             Meaning that if a player want to quit, the message will have to climb the call stack all the way up.
+             It makes more sense to cut the game flow on the game-control level. This form will diminish
+             future bugs and maintenance as well as providing a simpler software model.*/
+            
+            Environment.Exit(0);
+        }
     }
 }
