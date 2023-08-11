@@ -18,7 +18,7 @@ namespace Ex02_01
         {
             eGameStatus currentStatus;
             uint validGuessCount;
-            bool userWantToKeepPlaying;
+            
             GameBoard.WelcomePlayer();
             validGuessCount = getValidGuessesCount();
             m_controller = new GameControl(validGuessCount);
@@ -26,31 +26,26 @@ namespace Ex02_01
 
             do
             {
-                playTurn(out userWantToKeepPlaying);
+                playTurn();
                 currentStatus = m_controller.EvaluateGameStatus();
             }
             
-            while (currentStatus == eGameStatus.Ongoing && userWantToKeepPlaying);
+            while (currentStatus == eGameStatus.Ongoing);
+
             finishGame();
         }
 
-        private void playTurn(out bool o_UserWantToKeepPlaying)
+        private void playTurn()
         {
             char[] validGuess;
 
             GameBoard.GeneralMessage("Please type your next guess <A B C D> or 'Q' to Quit");
-            validGuess = getValidGuess(out o_UserWantToKeepPlaying);
+            validGuess = getValidGuess();
             m_controller.AddTurn(validGuess);
             GameBoard.PrintState(m_controller.TurnsHistory);
+            
         }
         
-        private void referPlayerQuit(bool i_PlayerWantToKeepPlaying)
-        {
-            if (! i_PlayerWantToKeepPlaying)
-            {
-                GameBoard.InformUserAboutQuit();
-            }
-        }
 
         private void finishGame()
         {
@@ -70,17 +65,20 @@ namespace Ex02_01
             {
                 Initiate();
             }
+  
+            ExitGame: GameBoard.InformUserAboutQuit();
         }
         
-        private char[] getValidGuess(out bool o_UserWantToKeepPlaying)
+        private char[] getValidGuess()
         {
             bool inputIsPragmaticallyValid;
             char[] userGuess;
+            bool userWantToKeepPlaying;
 
             do
             {
-                userGuess = GameBoard.GetSyntacticallyValidGuess(out o_UserWantToKeepPlaying);
-                referPlayerQuit(!o_UserWantToKeepPlaying);
+                userGuess = GameBoard.GetSyntacticallyValidGuess(out userWantToKeepPlaying);
+                 referUserQuit(userWantToKeepPlaying);
                 inputIsPragmaticallyValid = GameControl.CheckIfPragmaticallyValidSequence(userGuess);
 
                 if (!inputIsPragmaticallyValid)
@@ -103,8 +101,9 @@ namespace Ex02_01
             do
             {
                 guessesCount = GameBoard.GetSyntacticallyValidGuessesCount(GameControl.MinimumGuessesCount,
-                    GameControl.MaximumGuessesCount, out bool playerWantToQuit);
-                referPlayerQuit(playerWantToQuit);
+                    GameControl.MaximumGuessesCount, out bool userWantToQuit);
+                referUserQuit(userWantToQuit);
+
                 guessesCountIsPragmaticallyValid = GameControl.CheckIfPragmaticallyValidGuessesCount(guessesCount);
                 if (!guessesCountIsPragmaticallyValid)
                 {
@@ -115,6 +114,21 @@ namespace Ex02_01
             while (!guessesCountIsPragmaticallyValid);
 
             return guessesCount;
+        }
+
+        public void referUserQuit(bool i_UserWantToQuit)
+        {
+            /*Architecture choice: using Environment.Exit instead of breaking all loops:
+            Note that implicitly the game manager use 3 nested loops each turn:
+            InitiateGame() LOOP => play() => getValidGuess() LOOP => GetSyntacticallyValidGuess LOOP
+            Meaning that if a player want to quit, the message will have to climb the call stack all the way up.
+            It makes more sense to cut the game flow on the firs game-manager level. This form will diminish
+            future bugs and maintenance as well as providing a simpler software model.*/
+            if (i_UserWantToQuit)
+            {
+                GameBoard.InformUserAboutQuit();
+                Environment.Exit(0);
+            }
         }
     }
 }

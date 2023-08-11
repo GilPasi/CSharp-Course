@@ -6,7 +6,7 @@ namespace Ex02_01
         private List<Turn> m_turnsHistory;
         private const int k_GuessSize = 4;
         private const int k_MinimumGuessesCount = 4,k_MaximumGuessesCount = 10;
-
+        
         public static int MinimumGuessesCount 
         {
             get
@@ -106,7 +106,7 @@ namespace Ex02_01
         public eGameStatus EvaluateGameStatus()
         {
             eGameStatus currentStatus = eGameStatus.Ongoing;
-
+            
             if (TurnsHistory.Count == TurnsHistory.Capacity)
             {
                 currentStatus = eGameStatus.Defeat;
@@ -115,7 +115,7 @@ namespace Ex02_01
             {
                 currentStatus = eGameStatus.Victory;
             }
-
+            
             return currentStatus;
         }
     }
