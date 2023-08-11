@@ -81,6 +81,13 @@ namespace Ex02_01
         {
             m_turnsHistory.Add(new Turn(i_Guess, r_correctSequence));
         }
+        
+        private Turn getLastTurn()
+        {
+            int lastTurnIndex = TurnsHistory.Count - 1;
+            
+            return TurnsHistory[lastTurnIndex];
+        }
 
         public eGameStatus EvaluateGameStatus()
         {
@@ -96,13 +103,6 @@ namespace Ex02_01
             }
 
             return currentStatus;
-        }
-
-        private Turn getLastTurn()
-        {
-            int lastTurnIndex = TurnsHistory.Count - 1;
-            
-            return TurnsHistory[lastTurnIndex];
         }
         
         public static void AbandonGame()

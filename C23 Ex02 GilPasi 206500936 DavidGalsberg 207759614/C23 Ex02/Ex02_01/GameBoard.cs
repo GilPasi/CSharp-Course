@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 namespace Ex02_01
 {
@@ -52,15 +51,6 @@ namespace Ex02_01
             }
         }
         
-        public static void WelcomePlayer()
-        {
-            Console.WriteLine("Welcome to bulls and cows!٩(^‿^)۶");
-            Console.WriteLine("Restrictions:");
-            Console.WriteLine("1.Every guess must have exactly {0} characters",GameControl.GuessSize);
-            Console.WriteLine("2.No letter may repeat itself");
-            Console.WriteLine("3.At any moment, enter 'Q' to quit");
-        }
-
         public static uint GetSyntacticallyValidGuessesCount(char i_BottomBound,
             char i_TopBound, out bool i_UserWantToQuit)
         {
@@ -113,14 +103,23 @@ namespace Ex02_01
             return userGuess.ToCharArray();
         }
         
+        public static void WelcomePlayer()
+        {
+            Console.WriteLine("Welcome to bulls and cows!(^‿^)");
+            Console.WriteLine("Restrictions:");
+            Console.WriteLine("1.Every guess must have exactly {0} characters",GameControl.GuessSize);
+            Console.WriteLine("2.No letter may repeat itself");
+            Console.WriteLine("3.At any moment, enter 'Q' to quit");
+        }
+        
         public static void InformUserAboutDefeat()
         {
-            Console.WriteLine("You are out of tries! maybe next time (ㅠ﹏ㅠ)");
+            Console.WriteLine("No more guesses allowed. You lost.");
         }
             
-        public static void InformUserAboutVictory()
+        public static void InformUserAboutVictory(int i_Steps)
         {
-            Console.WriteLine("Congratulations! You got it! (⌒ ▽ ⌒)");
+            Console.WriteLine("You guessed after {0} steps!", i_Steps);
         }
         
         public static void InformUserAboutQuit()
@@ -133,6 +132,11 @@ namespace Ex02_01
             Console.WriteLine("Would you like to start a new game? <Y/N>");
 
             return Console.ReadLine().ToUpper() == k_AgreementMessage ;
+        }
+        
+        public static void GeneralMessage(string i_Message)
+        {
+            Console.WriteLine(i_Message);
         }
 
         internal class TurnStringifier
