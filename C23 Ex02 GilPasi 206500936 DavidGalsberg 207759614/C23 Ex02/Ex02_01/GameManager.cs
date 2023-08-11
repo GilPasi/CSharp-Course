@@ -94,7 +94,9 @@ namespace Ex02_01
                     GameBoard.GeneralMessage(string.Format(
                         "This guess is not valid. A valid guess has exactly {0} none repeating letters", GameControl.GuessSize));
                 }
-            } while (!inputIsPragmaticallyValid);
+            } 
+            
+            while (!inputIsPragmaticallyValid);
 
             return userGuess;
         }
