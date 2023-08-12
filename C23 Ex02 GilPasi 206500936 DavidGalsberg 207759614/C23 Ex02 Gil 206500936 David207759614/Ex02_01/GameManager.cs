@@ -1,4 +1,6 @@
-namespace Ex02_01
+using System;
+
+namespace Ex02
 {
     /*Architecture choice: splitting the game UI into two sections:
      1. Game Manager
@@ -18,9 +20,11 @@ namespace Ex02_01
         {
             eGameStatus currentStatus;
             uint validGuessCount;
-            
+
+            GameBoard.CleanScreen();
             GameBoard.WelcomePlayer();
             validGuessCount = getValidGuessesCount();
+            GameBoard.CleanScreen();
             m_controller = new GameControl(validGuessCount);
             GameBoard.PrintState(m_controller.TurnsHistory);
 
@@ -29,7 +33,7 @@ namespace Ex02_01
                 playTurn();
                 currentStatus = m_controller.EvaluateGameStatus();
             }
-            
+
             while (currentStatus == eGameStatus.Ongoing);
 
             finishGame();
@@ -41,14 +45,16 @@ namespace Ex02_01
 
             GameBoard.GeneralMessage("Please type your next guess <A B C D> or 'Q' to Quit");
             validGuess = getValidGuess();
+            GameBoard.CleanScreen();
             m_controller.AddTurn(validGuess);
             GameBoard.PrintState(m_controller.TurnsHistory);
-            
+
         }
-        
+
 
         private void finishGame()
         {
+            GameBoard.CleanScreen();
             //Treat the correct sequence as if it was a turn
             GameBoard.PrintState(m_controller.TurnsHistory, GameBoard.TurnStringifier.TurnToString(
                 new Turn(m_controller.CorrectSequence)));
@@ -65,22 +71,20 @@ namespace Ex02_01
             {
                 Initiate();
             }
-            else
-            {
-                GameBoard.InformUserAboutQuit();
-            }
+
+        GameBoard.InformUserAboutQuit();
         }
-        
+
         private char[] getValidGuess()
         {
             bool inputIsPragmaticallyValid;
             char[] userGuess;
-            bool userWantToQuit;
+            bool userWantToKeepPlaying;
 
             do
             {
-                userGuess = GameBoard.GetSyntacticallyValidGuess(out userWantToQuit);
-                 referUserQuit(userWantToQuit);
+                userGuess = GameBoard.GetSyntacticallyValidGuess(out userWantToKeepPlaying);
+                referUserQuit(userWantToKeepPlaying);
                 inputIsPragmaticallyValid = GameControl.CheckIfPragmaticallyValidSequence(userGuess);
 
                 if (!inputIsPragmaticallyValid)
@@ -88,8 +92,8 @@ namespace Ex02_01
                     GameBoard.GeneralMessage(string.Format(
                         "This guess is not valid. A valid guess has exactly {0} none repeating letters", GameControl.GuessSize));
                 }
-            } 
-            
+            }
+
             while (!inputIsPragmaticallyValid);
 
             return userGuess;
@@ -99,7 +103,7 @@ namespace Ex02_01
         {
             uint guessesCount;
             bool guessesCountIsPragmaticallyValid;
-            
+
             do
             {
                 guessesCount = GameBoard.GetSyntacticallyValidGuessesCount(GameControl.MinimumGuessesCount,
@@ -111,8 +115,8 @@ namespace Ex02_01
                 {
                     GameBoard.GeneralMessage("This number is out of range");
                 }
-            } 
-            
+            }
+
             while (!guessesCountIsPragmaticallyValid);
 
             return guessesCount;

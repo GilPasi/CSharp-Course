@@ -1,6 +1,5 @@
-using System.Dynamic;
 
-namespace Ex02_01
+namespace Ex02
 {
     public class GameControl
     {

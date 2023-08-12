@@ -1,5 +1,7 @@
+using System.Collections.Generic;
+using System;
 using System.Text;
-namespace Ex02_01
+namespace Ex02
 {
     public class GameBoard
     {
@@ -14,19 +16,19 @@ namespace Ex02_01
         {
             sr_hiddenSequence = string.Format("{0} # # # # {0}         {0}",
                 k_verticalDelimiter);
-            sr_emptySequence =  string.Format("{0}         {0}         {0}",
+            sr_emptySequence = string.Format("{0}         {0}         {0}",
                 k_verticalDelimiter);
         }
 
         public static void PrintState(List<Turn> i_Turns, string i_CorrectSequence = null)
         {
             int i;
-            
+
             Console.WriteLine("Current board status:");
-            Console.WriteLine("{0}Pins:    {0}Result:  {0}",k_verticalDelimiter);
+            Console.WriteLine("{0}Pins:    {0}Result:  {0}", k_verticalDelimiter);
             Console.WriteLine(k_horizonalDelimiter);
             if (i_CorrectSequence == null)
-                //Meaning no string was sent as a parameter
+            //Meaning no string was sent as a parameter
             {
                 Console.WriteLine(sr_hiddenSequence);
             }
@@ -43,35 +45,35 @@ namespace Ex02_01
                 Console.WriteLine(k_horizonalDelimiter);
                 i++;
             }
-            
+
             for (; i < i_Turns.Capacity; i++)
             {
                 Console.WriteLine(sr_emptySequence);
                 Console.WriteLine(k_horizonalDelimiter);
             }
         }
-        
+
         public static uint GetSyntacticallyValidGuessesCount(int i_BottomBound,
             int i_TopBound, out bool o_UserWantToQuit)
         {
             int parsedUserChoice = 0;
             string userChoice;
             bool isValid;
-            
+
             do
             {
-                Console.WriteLine("Please enter a the requested guesses count in range {0}-{1}",i_BottomBound ,i_TopBound);
+                Console.WriteLine("Please enter a the requested guesses count in range {0}-{1}", i_BottomBound, i_TopBound);
                 userChoice = Console.ReadLine();
                 o_UserWantToQuit = userChoice.ToUpper() == k_QuitMessage;
-                isValid = int.TryParse(userChoice,  out parsedUserChoice);
+                isValid = int.TryParse(userChoice, out parsedUserChoice);
                 if (!isValid && !o_UserWantToQuit)
                 {
                     Console.WriteLine("This is not a number");
                 }
-            } 
-            
+            }
+
             while (!isValid && !o_UserWantToQuit);
-            
+
             return (uint)parsedUserChoice;
         }
 
@@ -79,7 +81,7 @@ namespace Ex02_01
         {
             string userGuess;
             bool syntacticValidity;
-            
+
             do
             {
                 Console.WriteLine("Try to guess the sequence:");
@@ -91,15 +93,15 @@ namespace Ex02_01
                 {
                     syntacticValidity = syntacticValidity && isLetterOneOfTheFirst8LettersInEnglish(character);
                 }
-                
-                if(!syntacticValidity && !o_UserWantQuit)
+
+                if (!syntacticValidity && !o_UserWantQuit)
                 {
                     Console.WriteLine("Your guess contains characters that are not a-h letters");
                 }
-            } 
-            
+            }
+
             while (!syntacticValidity && !o_UserWantQuit);
-            
+
             return userGuess.ToCharArray();
         }
 
@@ -122,21 +124,21 @@ namespace Ex02_01
                  \   /           \   /           \   /            \   /
                   ^_^             ^_^            (`_`)             ^_^  ");
             Console.WriteLine("Restrictions:");
-            Console.WriteLine("1.Every guess must have exactly {0} characters",GameControl.GuessSize);
+            Console.WriteLine("1.Every guess must have exactly {0} characters", GameControl.GuessSize);
             Console.WriteLine("2.No letter may repeat itself");
             Console.WriteLine("3.At any moment, enter 'Q' to quit");
         }
-        
+
         public static void InformUserAboutDefeat()
         {
             Console.WriteLine("No more guesses allowed. You lost.");
         }
-            
+
         public static void InformUserAboutVictory(int i_Steps)
         {
             Console.WriteLine("You guessed after {0} steps!", i_Steps);
         }
-        
+
         public static void InformUserAboutQuit()
         {
             Console.WriteLine("Thank you for playing! Bye!");
@@ -146,12 +148,21 @@ namespace Ex02_01
         {
             Console.WriteLine("Would you like to start a new game? <Y/N>");
 
-            return Console.ReadLine().ToUpper() == k_AgreementMessage ;
+            return Console.ReadLine().ToUpper() == k_AgreementMessage;
         }
-        
+
         public static void GeneralMessage(string i_Message)
         {
             Console.WriteLine(i_Message);
+        }
+
+        public static void CleanScreen() 
+        {
+            try
+            {
+                ConsoleUtils.Screen.Clear();
+            }
+            catch (Exception e){}
         }
 
         internal class TurnStringifier
@@ -160,7 +171,7 @@ namespace Ex02_01
             private const string k_BullSign = "V";
             private const string k_CowSign = "X";
             private const int k_QunatityOfNeededCharactersForPrintingOneTurn = 50;
-            
+
             public static string TurnToString(Turn i_Turn)
             {
                 return string.Format("{0}{1}{0}{2}{0}", k_verticalDelimiter,
@@ -168,8 +179,8 @@ namespace Ex02_01
             }
 
             private static string guessToString(char[] i_Guess)
-            { 
-                StringBuilder guessAsString = new StringBuilder("",k_QunatityOfNeededCharactersForPrintingOneTurn);
+            {
+                StringBuilder guessAsString = new StringBuilder("", k_QunatityOfNeededCharactersForPrintingOneTurn);
 
                 for (int i = 0; i < GameControl.GuessSize; i++)
                 {
@@ -182,38 +193,35 @@ namespace Ex02_01
             }
 
             private static string guessOutcomeToString(eHitOptions i_Bulls, eHitOptions i_Cows)
-            { 
-                StringBuilder GuessOutcomeAsString = new StringBuilder("",k_QunatityOfNeededCharactersForPrintingOneTurn);
+            {
+                StringBuilder GuessOutcomeAsString = new StringBuilder("", k_QunatityOfNeededCharactersForPrintingOneTurn);
                 eHitOptions j = eHitOptions.NoHit;
-                
+
                 for (eHitOptions i = eHitOptions.NoHit; i < i_Cows; i++)
                 {
                     GuessOutcomeAsString.Append(k_Space);
                     GuessOutcomeAsString.Append(k_CowSign);
                     j++;
                 }
-                
-                for (eHitOptions i = eHitOptions.NoHit; i < i_Bulls; i++)                  
-                {                                                          
-                    GuessOutcomeAsString.Append(k_Space);                  
+
+                for (eHitOptions i = eHitOptions.NoHit; i < i_Bulls; i++)
+                {
+                    GuessOutcomeAsString.Append(k_Space);
                     GuessOutcomeAsString.Append(k_BullSign);
                     j++;
                 }
-                
-                for (; j < eHitOptions.FourHits; j++)   
-                {                                           
-                    GuessOutcomeAsString.Append(k_Space);   
-                    GuessOutcomeAsString.Append(k_Space);   
 
-                }  
-                
+                for (; j < eHitOptions.FourHits; j++)
+                {
+                    GuessOutcomeAsString.Append(k_Space);
+                    GuessOutcomeAsString.Append(k_Space);
+
+                }
+
                 GuessOutcomeAsString.Append(k_Space);
-                
+
                 return GuessOutcomeAsString.ToString();
             }
         }
     }
 }
-
-
-
