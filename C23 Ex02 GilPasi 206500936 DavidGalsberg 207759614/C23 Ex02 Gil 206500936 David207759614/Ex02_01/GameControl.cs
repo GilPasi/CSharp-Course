@@ -1,3 +1,5 @@
+using System.Dynamic;
+
 namespace Ex02_01
 {
     public class GameControl
@@ -56,19 +58,32 @@ namespace Ex02_01
         {
             char[] randomSequence = new char[k_GuessSize];
             Random random = new Random();
-
+            List<int> untakenLetters = createListInRange('A', 'H');
+            
             for (int i = 0; i < k_GuessSize; i++)
             {
-                randomSequence[i] = (char)random.Next('A', 'H');
-            }
+                int letterPosition =  random.Next(0, untakenLetters.Count);
+                Console.WriteLine("letterPosition:{0} " ,letterPosition);
+                Console.WriteLine("Count:{0} " ,untakenLetters.Count());
 
-            if (!CheckIfPragmaticallyValidSequence(randomSequence))
-            {
-                //If the generation was unsuccessful try again
-                randomSequence = generateSequence();
+                randomSequence[i] = (char)untakenLetters[letterPosition];
+                untakenLetters.RemoveAt(letterPosition);
             }
 
             return randomSequence;
+        }
+
+        private static List<int> createListInRange (int i_Start, int i_End)
+        {
+            int delta = i_End - i_Start;
+            List<int> list = new List<int>(delta);
+            Console.WriteLine(list.Count);
+            for (int i = 0; i < delta; i++)
+            {
+                list.Add(i + i_Start);
+            }
+
+            return list;
         }
 
         public static bool CheckIfPragmaticallyValidSequence(char[] i_Sequence)

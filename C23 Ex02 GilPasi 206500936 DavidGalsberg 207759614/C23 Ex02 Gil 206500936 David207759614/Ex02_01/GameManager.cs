@@ -65,8 +65,10 @@ namespace Ex02_01
             {
                 Initiate();
             }
-  
-            ExitGame: GameBoard.InformUserAboutQuit();
+            else
+            {
+                GameBoard.InformUserAboutQuit();
+            }
         }
         
         private char[] getValidGuess()
