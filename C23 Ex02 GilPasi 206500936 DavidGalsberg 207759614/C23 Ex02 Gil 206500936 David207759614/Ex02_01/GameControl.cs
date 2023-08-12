@@ -63,8 +63,6 @@ namespace Ex02_01
             for (int i = 0; i < k_GuessSize; i++)
             {
                 int letterPosition =  random.Next(0, untakenLetters.Count);
-                Console.WriteLine("letterPosition:{0} " ,letterPosition);
-                Console.WriteLine("Count:{0} " ,untakenLetters.Count());
 
                 randomSequence[i] = (char)untakenLetters[letterPosition];
                 untakenLetters.RemoveAt(letterPosition);
@@ -77,7 +75,7 @@ namespace Ex02_01
         {
             int delta = i_End - i_Start;
             List<int> list = new List<int>(delta);
-            Console.WriteLine(list.Count);
+            
             for (int i = 0; i < delta; i++)
             {
                 list.Add(i + i_Start);
