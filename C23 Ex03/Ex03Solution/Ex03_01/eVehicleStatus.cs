@@ -1,9 +1,10 @@
 namespace Ex03
 {
-    public enum VehicleStatus
+    public enum eVehicleStatus
     {
         CurrentlyTreated,
         Repaired,
         Redeemed,
+        AllStatuses,
     }
 }
