@@ -10,6 +10,12 @@
 
     <ItemGroup>
       <Compile Remove="Program.cs" />
+      <Compile Remove="VehicleProperty.cs" />
     </ItemGroup>
+
+
+
+
+
 
 </Project>

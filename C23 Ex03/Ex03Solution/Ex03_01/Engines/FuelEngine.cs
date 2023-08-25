@@ -10,7 +10,7 @@ public class FuelEngine : Engine
     public override float? CurrentEnergyLevel
     {
         set { }
-        get { return m_currentEnergyLevel; }
+        get { return m_CurrentEnergyLevel; }
 
     }
 }

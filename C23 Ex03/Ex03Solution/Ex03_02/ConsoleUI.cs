@@ -1,72 +1,105 @@
+using System.Data.SqlTypes;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 
 namespace Ex03
 {
     public class ConsoleUI
     {
-        public GarageLogic m_garage;
-        const int k_BufferSize = 70;
-        private StringBuilder m_errorMessages = new StringBuilder(k_BufferSize);
-        
+        public GarageLogic m_Garage;
+        //Questions:
+        private LimitedChoiceQuestion<int> m_GarageMenu;
+        private OpenQuestion<string> m_LicenseNumberQuestion;
+        private LimitedChoiceQuestion<Type> m_VehicleTypeQuestion;
+        private OpenQuestion<float> m_FuelLeveleQuestion;
+        private OpenQuestion<float> m_ElectricityLevelQuestion;
+        private LimitedChoiceQuestion<bool> m_MultiplePumpQuestion;
+        private OpenQuestion<float> m_PumpQuntityQuestion;
+        private LimitedChoiceQuestion<eVehicleStatus> m_VehicleStatusVehicle;
+        private LimitedChoiceQuestion<eVehicleStatus> m_FilterLicenseNumbersQuestion;
 
         public ConsoleUI()
         {
-            m_garage = new GarageLogic();
+            m_Garage = new GarageLogic();
+            /*The following section is just initialization of all the questions.
+             Therefore you can refer here to any question's format albeit the actual
+             ask logic is implemented in the Question class and its descendants */
+            m_GarageMenu = new LimitedChoiceQuestion<int>(
+                new List<int>(new int[8] {1, 2, 3, 4, 5, 6, 7, 8}),
+                new List<string>(new string[8]
+                {
+                    "Add a vehicle to fix", "Show the vehicles", "Change a vehicle status", "Pump wheels",
+                    "Refuel a vehicle", "Recharge a vehicle", " Get Information about a vehicle", "Exit garage"
+                })
+                , "Welcome to the garage! How can I help you? (enter a number corresponding to the request)",
+                "This is not a valid option, please enter a number in range 1-9");
+            m_LicenseNumberQuestion = new OpenQuestion<string>("Please enter the wanted vehicle's license number: ",
+                "The license number could not contain any special characters", new LettersAndDigitsParser());
+            
+            m_VehicleTypeQuestion = new LimitedChoiceQuestion<Type>(new List<Type>(VehicleFactory.AllVehicleTypes),
+                "What kind of a vehicle do you use?",
+                "The chosen vehicle was not one of the options");
+            m_VehicleTypeQuestion.InferOptions();
+            m_FuelLeveleQuestion = new OpenQuestion<float>("Enter the current fuel level(liters)",
+                "Your answer is not a number", new FloatParser());
+            m_ElectricityLevelQuestion = new OpenQuestion<float>(
+                "Enter the current time left before the battery dies(hours)",
+                "Your answer is not a number", new FloatParser());
+            m_MultiplePumpQuestion = new LimitedChoiceQuestion<bool>(new List<bool>(new bool []{ true, false }),
+                "Do you wish to pump all the tires at once?",
+                "Your answer is not one of the options");
+            m_MultiplePumpQuestion.InferOptions();
+            m_PumpQuntityQuestion = new OpenQuestion<float>("Enter the air pressure",
+                "The given value is not a number", new FloatParser());
+            
+            eVehicleStatus [] allStatuses = (eVehicleStatus[])Enum.GetValues(typeof(eVehicleStatus));
+            List<eVehicleStatus> filtersList = new List<eVehicleStatus>(allStatuses);
+            m_FilterLicenseNumbersQuestion = new LimitedChoiceQuestion<eVehicleStatus>(filtersList,
+                    "Select a status:",
+                    "The requested status is not one of the options");
+            m_FilterLicenseNumbersQuestion.InferOptions();
+            m_FilterLicenseNumbersQuestion.EditOption(0,"No filter");
+
+            m_VehicleStatusVehicle = new LimitedChoiceQuestion<eVehicleStatus>(m_FilterLicenseNumbersQuestion);
+            m_VehicleStatusVehicle.RemoveOption(0);
         }
 
         public void PresentOptions()
         {
-            string userAnswer;
-            string reformattedAnswer;
+            int userAnswer;
             bool userIsDone = false;
-            
-            Console.WriteLine(
-                "Welcome to the garage! How can I help you? (enter a number corresponding to the request)");
+
             do
             {
-                Console.WriteLine(
-                    @"1.Add a vehicle to fix
-                    2. Show all vehicle numbers
-                    3. Change a vehicle status
-                    4. Pump wheels
-                    5. Refuel a vehicle
-                    6. Recharge a vehicle
-                    7. Get Information about a vehicle"
-                );
-                
-                userAnswer = Console.ReadLine();
-                reformattedAnswer = IOManipulator.ConvertToUniformFormat(userAnswer);
-                switch (reformattedAnswer)
+                userAnswer = m_GarageMenu.AskAndForceInput();
+
+                switch (userAnswer)
                 {
-                    case "1":
+                    case 1:
                         SignNewVehicle();
                         break;
-                    case "2":
-                        showVehicles();
+                    case 2:
+                        ShowVehicles();
                         break;
-                    case "3":
-                        changeVehicleStatus();
+                    case 3:
+                        ChangeVehicleStatus();
                         break;
-                    case "4":
+                    case 4:
                         pumpWheels();
                         break;
-                    case "5":
+                    case 5:
                         refuelVehicle();
                         break;
-                    case "6":
+                    case 6:
                         rechargeVehicle();
                         break;
-                    case "7":
+                    case 7:
                         getInformationAboutAVehicle();
                         break;
-                    case "Q":
+                    case 8:
                         Console.WriteLine("Ok bye!");
-                        userIsDone = reformattedAnswer == "Q";
-                        break;
-                    default:
-                        Console.WriteLine("This is not a valid option, please enter" +
-                                          " a number in range 1-7 or 'Q' for quitting");
+                        userIsDone = userAnswer == 8;
                         break;
                 }
             } while (!userIsDone);
@@ -74,70 +107,88 @@ namespace Ex03
 
         public void SignNewVehicle()
         {
-            string licenseNumber;
+            string licenseNumber = string.Empty;
             VehicleRecord vehicleRecord;
-            
-            Console.WriteLine("Please enter the wanted vehicle's license number: ");
-            licenseNumber = Console.ReadLine();
 
-            if (IOManipulator.ContainsSpecialCharacters(licenseNumber))
+            try
             {
-                Console.WriteLine("The license number could not contain any special characters");
+                licenseNumber = m_LicenseNumberQuestion.AskAndForceInput();
+                vehicleRecord = m_Garage.AllRecords[licenseNumber];
+                Console.WriteLine("This vehicle is already signed");
+                vehicleRecord.Status = eVehicleStatus.CurrentlyTreated;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine("What is the owner's first name?");
+                string ownerName = IOManipulator.ForceParseableInput<string>(
+                    "Owner's name could not contain numbers, spaces or special characters",
+                    new AlphaBeitParser()
+                );
+                Console.WriteLine("What is the owner's phone number?");
+                string ownerPhoneNumber = IOManipulator.ForceParseableInput<string>(
+                    "Owner's phone could not contain letters, hyphens or special characters",
+                    new DigitsParser());
+                Vehicle vehicle = addVehicle();
+                vehicle.LicenseNumber = licenseNumber;
+                VehicleRecord newRecord = new VehicleRecord(vehicle, ownerName, ownerPhoneNumber);
+                m_Garage.SignVehicle(newRecord);
+            }
+        }
+
+        public void ShowVehicles()
+        {
+            Console.WriteLine("How would you like to filter the shown vehicle?");
+            eVehicleStatus statusFilter = m_FilterLicenseNumbersQuestion.AskAndForceInput();
+
+            Console.WriteLine("Vehicles in the garage currently:");
+            int vehicleSerialNumber = 1;
+            foreach (KeyValuePair<string, VehicleRecord> coupledRecord in m_Garage.AllRecords)
+            {
+                if (statusFilter == null || coupledRecord.Value.Status == statusFilter)
+                {
+                Console.WriteLine("{0}.\t{1}",
+                    vehicleSerialNumber, coupledRecord.Value.LicenseNumber);
+                }
+                
+                vehicleSerialNumber++;
+            }
+        }
+
+        private void ChangeVehicleStatus()
+        {
+
+            Console.WriteLine("Please enter the wanted vehicle's license number: ");
+            string licenseNumber = Console.ReadLine();
+            VehicleRecord record;
+            bool validRequest = m_Garage.AllRecords.TryGetValue(licenseNumber, out record);
+            
+            if (!validRequest)
+            {
+                Console.WriteLine("Sorry, the given license number does not appear in our system");
             }
             else
             {
-                if (m_garage.TryGetVehicleRecord(licenseNumber, out vehicleRecord))
-                {
-                    Console.WriteLine("This vehicle is already signed");
-                    vehicleRecord.Status = eVehicleStatus.CurrentlyTreated;
-                }
-                else
-                {
-                    Console.WriteLine("What is the owner's first name?");
-                    string ownerName = IOManipulator.ForceAlphabeiticalInput(
-                        "Owner's name could not contain numbers, spaces or special characters");
-                    string ownerPhoneNumber = IOManipulator.ForceNumericalInput(
-                        "Owner's phone could not contain letters, hyphens or special characters");
-                    
-                    VehicleRecord newRecord = new VehicleRecord(addVehicle(), ownerName, ownerPhoneNumber);
-                    m_garage.SignVehicle(newRecord);
-                }
+                Console.WriteLine("Status to change the vehicle to:");
+                record.Status = m_VehicleStatusVehicle.AskAndForceInput();
             }
-        }
-        
-        private void showVehicles()
-        {
-            m_errorMessages.Clear();
-            eVehicleStatus statusFilter;
-            eVehicleStatus[] filters = (eVehicleStatus[])Enum.GetValues(typeof(eVehicleStatus));
-            
-            referMutipleChoiceItem(ref statusFilter,filters,
-                "Which status would you like to view?","The requested filter is not one of the options" );
-            
-            Console.WriteLine("Vehicles in the garage currently:");
-            int vehicleSerialNumber = 1;
-            foreach (KeyValuePair<string,VehicleRecord> coupledRecord in m_garage.AllRecords)
-            {
-                Console.WriteLine("{0}.\t{1}\t{2}\t{3}\t{4}",
-                    vehicleSerialNumber++, coupledRecord.Value.OwnerName,
-                    coupledRecord.Key, coupledRecord.Value.LicenseNumber );
-            }
-        }
-       
-        private void changeVehicleStatus()
-        {
             
         }
 
         private void pumpWheels()
         {
+            string userInput;
+            VehicleRecord selectedRecord;
             
+            Console.WriteLine("Please enter the vehicle license");
+            userInput = Console.ReadLine();
+            m_Garage.TryGetVehicleRecord(userInput, out selectedRecord);
+            referTiresPressure(selectedRecord.PhysicalContent);
         }
 
         private void refuelVehicle()
         {
         }
-        
+
         private void rechargeVehicle()
         {
         }
@@ -149,160 +200,112 @@ namespace Ex03
         private Vehicle addVehicle()
         {
             Vehicle userVehicle = null;
-            Type[] vehicleOptions = VehicleFactory.AllVehicleTypes;
+            bool validVehicleSigning;
 
             do
             {
-                m_errorMessages.Clear();
-                referMutipleChoiceItem<Vehicle>(ref userVehicle, vehicleOptions, "What kind of a vehicle do you use?",
-                    "The chosen vehicle was not one of the options");
-                referCurrentEnergy(userVehicle);
-                referTiresPressure(userVehicle);
-                Console.WriteLine(m_errorMessages.ToString());
-            } while(m_errorMessages.ToString() != string.Empty);
-
-            return userVehicle;
-        }
-        
-        private bool managedTryParse( out float o_ParsedValue, string i_RequestForNumber, string i_ErrorText)
-        {
-            bool successfulParse;
-            
-            Console.WriteLine(i_RequestForNumber);
-            successfulParse = float.TryParse(Console.ReadLine(), out o_ParsedValue);
-            if (!successfulParse)
-            {
-                m_errorMessages.Append(i_ErrorText);
-            }
-
-            return successfulParse;
-        }
-        private void referCurrentEnergy( Vehicle i_Vehicle)
-        {
-            if (i_Vehicle != null && i_Vehicle.Engine.CurrentEnergyLevel == null)
-            {
-                float leftEnergy;
-                string requestMessage = 
-                    i_Vehicle.Engine is ElectricalEngine?
-                    "Enter the current time left before the battery dies(hours)":
-                    "Enter the current fuel level(liters)";
-                string errorText = "The energy value is not a number";
-                
-                managedTryParse(out leftEnergy, requestMessage, errorText);
+                validVehicleSigning = true;
                 try
                 {
-                    i_Vehicle.addEnergy(leftEnergy);
+                    userVehicle = referVehicleType();
+                    referCurrentEnergy(userVehicle);
+                    referTiresPressure(userVehicle);
+                    referUniqueDemands(userVehicle);
+                }
+                catch (ArgumentException ex)
+                {
+                    validVehicleSigning = false;
+                    Console.WriteLine(ex.Message);
                 }
                 catch (ValueOutOfRangeException ex)
                 {
-                    m_errorMessages.Append(ex.Message);
+                    validVehicleSigning = false;
+                    Console.WriteLine("The given value is not in the range [{0},{1}]", ex.Range[0], ex.Range[1]);
                 }
-            }
-        }
-
-        private bool askAboutTiresCommonAirPressure()
-        {
-            Console.WriteLine("Tires air pressure:{0} do you want to enter the same air pressure for all " +
-                              "tires?(Y for Yes or any other key for no)", Environment.NewLine);         
-            string userInput = Console.ReadLine();
-            return userInput.ToUpper() == "Y";
-        }
-
-        private void  referTiresPressure( Vehicle i_selectedVehicle)
-        {
-            if(i_selectedVehicle != null && i_selectedVehicle.Tires == null)
-            {
-                if (askAboutTiresCommonAirPressure())
+                catch (Exception ex)
                 {
-                    float leftPressure;
-               
-                    if (askTirePressure(out leftPressure))
-                    {
-                        m_garage.FillAllWheelsInAVehicle(leftPressure);
-                    }
+                    Console.WriteLine("Something went wrong, please rerun the program");
+                }
+            } while (!validVehicleSigning);
+
+            return userVehicle;
+        }
+
+        private Vehicle referVehicleType()
+        {
+            Type userVehicleType = m_VehicleTypeQuestion.AskAndForceInput();
+            return VehicleFactory.ProduceItem<Vehicle>(userVehicleType);
+        }
+
+        private void referCurrentEnergy(Vehicle i_Vehicle)
+        {
+            if (i_Vehicle != null && i_Vehicle.Engine.CurrentEnergyLevel == null)
+            {
+                float leftTimeForBattery;
+                if (i_Vehicle.Engine is ElectricalEngine)
+                {
+                    leftTimeForBattery = m_ElectricityLevelQuestion.AskAndForceInput();
                 }
                 else
                 {
-                    float[] tiresPressure = new float[i_selectedVehicle.GetTiresQuantity()];
-                    for (int i = 0; i < tiresPressure.Length; i++)
-                    {
-                        Console.Write(" {0}.", i);
-                        askTirePressure(out tiresPressure[i]);
-                    }
-                    m_garage.FillAllWheelsInAVehicle(tiresPressure);
+                    leftTimeForBattery = m_FuelLeveleQuestion.AskAndForceInput();
                 }
+
+                i_Vehicle.addEnergy(leftTimeForBattery);
             }
         }
-        
-        private bool askTirePressure(out float o_TirePressure)
-        {
-            string requestMessage =  "Enter the requested pressure" ;
-            string errorText = "One of the wheels' pressure is not a number";
-            return managedTryParse(out o_TirePressure, requestMessage, errorText);
 
-        }
-
-        private void referMutipleChoiceItem<T>(ref T io_Item, Type[] i_Options, string i_Question, string i_errorMessage)
+        private void referTiresPressure(Vehicle i_selectedVehicle)
         {
-            if (io_Item == null)
+            if (i_selectedVehicle != null && i_selectedVehicle.GetTiresQuantity() == 0)
             {
-                int currentOptionPosition = 0 ;
-                string[] optionsAsText = new string[i_Options.Length];
-                
-                foreach (Type itemType in i_Options)
+                bool pumpAllAtOnce = m_MultiplePumpQuestion.AskAndForceInput();
+
+                if (pumpAllAtOnce)
                 {
-                    optionsAsText[currentOptionPosition++] =  IOManipulator.PascalCaseToHumanReadable(itemType.Name);
-                }
-                
-                string optionsText = createOptionsText(optionsAsText,i_Question);
-                if (!tryGetChoiceFromOptions(out Type chosenType, optionsText, i_Options))
-                {
-                    m_errorMessages.Append(i_errorMessage);
+                    Console.WriteLine("The pressure for the tires");
+                    float requestedPressure = m_PumpQuntityQuestion.AskAndForceInput();
+                    i_selectedVehicle.PumpTiresSamePressure(requestedPressure);
                 }
                 else
                 {
-                    io_Item = VehicleFactory.ProduceItem<T>(chosenType);
+                    for (int i = 0; i < i_selectedVehicle.GetTiresCapacity(); i++)
+                    {
+                        Console.WriteLine("The pressure for the {0} tire", i);
+                        float requestedPressure = m_PumpQuntityQuestion.AskAndForceInput();
+                        i_selectedVehicle.PumpTire(requestedPressure, i + 1);
+                    }
                 }
             }
         }
-        
-        private string createOptionsText(string[] i_OptionsAsText,string i_Question)
-        {
-            const int k_AverageOptionSize = 10;
-            string questionString = string.Format("{0}{1}", i_Question, Environment.NewLine);
-            StringBuilder optionsText = new StringBuilder(questionString
-                ,k_AverageOptionSize * i_OptionsAsText.Length +questionString.Length);
-            int optionCounter = 1;
-            
-            foreach (Type vehicleType in VehicleFactory.AllVehicleTypes)
-            {
-                optionsText.Append(string.Format("{0}. {1}{2}",
-                    optionCounter++, vehicleType.Name,Environment.NewLine));
-            }
 
-            return optionsText.ToString();
-        }
-        
-        private static bool tryGetChoiceFromOptions<T>(out T o_ResultedItem,string i_InstructiveMessage, T[] i_Options)
+        private void referUniqueDemands(Vehicle i_Vehicle)
         {
-            string userInput;
-            bool success = false;
-            o_ResultedItem = default(T);
-            int optionNumber = 1;
+            object[] valuesForUniqueDataMembers = new object[i_Vehicle.UniqueDataMembers.Count];
+            int dataMemberPosition = 0;
             
-            Console.WriteLine(i_InstructiveMessage);
-            userInput = IOManipulator.ConvertToUniformFormat(Console.ReadLine());
-            foreach (T option in i_Options)
+            foreach (DataMember uniquePropery in i_Vehicle.UniqueDataMembers)
             {
-                success = userInput == optionNumber++.ToString();
-                if (success)
+                Question<object> dataMemberQuestion;
+                string questionWording = string.Format("Enter the value for {0}", uniquePropery.Name);
+                string errorMessage = "This value is not valid";
+                if(uniquePropery.hasFinitePossibleValues())
                 {
-                    o_ResultedItem = option;
-                    break;
+                    List<object> possibleValues = new List<object>(uniquePropery.PossibleValues);
+                    dataMemberQuestion = new LimitedChoiceQuestion<object>(
+                        possibleValues, questionWording, errorMessage);
+                    (dataMemberQuestion as LimitedChoiceQuestion<object>).InferOptions();
                 }
+                else
+                {
+                    dataMemberQuestion = new OpenQuestion<object>(questionWording, 
+                        errorMessage, uniquePropery.Parser);
+                }
+                
+                valuesForUniqueDataMembers[dataMemberPosition++] = dataMemberQuestion.AskAndForceInput();
             }
             
-            return success;
+            i_Vehicle.SetDataMembers(valuesForUniqueDataMembers);
         }
     }
 }
