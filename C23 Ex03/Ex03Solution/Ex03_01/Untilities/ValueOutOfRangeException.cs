@@ -13,9 +13,9 @@ public class ValueOutOfRangeException : Exception
             return new float[k_RangeDimentions] { m_minValue, m_maxValue };
         }
     }
-    public ValueOutOfRangeException(Exception i_BaseException, float i_MaxValue, float i_MinValue)
+    public ValueOutOfRangeException(Exception i_BaseException, float i_MinValue, float i_MaxValue)
     :base(string.Format(
-        "An error occured while trying to use a number which is not in range {0}-{1}" ,i_MinValue,i_MaxValue )
+        "{0} Value must be in range {1}-{2}", i_BaseException.Message ,i_MinValue, i_MaxValue )
         ,i_BaseException)
     {
         
