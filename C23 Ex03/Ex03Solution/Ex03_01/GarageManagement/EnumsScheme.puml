@@ -1,0 +1,39 @@
+@startuml
+enum eFuelType
+{
+    Octan98,
+    Octan95,
+    Octan96,
+    Soler,
+}    
+enum eVehicleStatus
+{
+    CurrentlyTreated,
+    Repaired,
+    Redeemed,
+}
+ enum eColor
+{
+    Black,
+    White,
+    Red,
+    Blue
+}
+
+ enum eDoorsCount
+{
+    TwoDoors,
+    ThreeDoors,
+    FourDoors,
+    FiveDoors,
+}
+
+enum eLicenseType
+{
+    A,
+    A1,
+    A2,
+    AB
+}
+
+@enduml

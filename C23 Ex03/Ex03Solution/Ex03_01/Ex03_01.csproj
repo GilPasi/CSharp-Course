@@ -7,19 +7,4 @@
         <AssemblyName>Ex03_01</AssemblyName>
         <RootNamespace>Ex03_01</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Remove="Program.cs" />
-      <Compile Remove="VehicleProperty.cs" />
-    <ItemGroup>
-      <None Remove="Engines\EngingeHierarchy.puml" />
-    </ItemGroup>
-
-    </ItemGroup>
-
-
-
-
-
-
 </Project>

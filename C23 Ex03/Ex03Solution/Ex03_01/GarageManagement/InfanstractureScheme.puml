@@ -1,0 +1,55 @@
+@startuml
+
+abstract class PseudoAttribute
+{
+    protected readonly string m_Name;
+    protected readonly IParser m_Parser;
+    protected bool m_HasValue;
+    public PseudoAttribute(string i_Name, IParser i_Parser)()
+    -public string Name()
+    -public IParser Parser()
+    -public bool HasValue()
+    -public abstract bool hasFinitePossibleValues();
+    -public abstract List<object> PossibleValues()
+    -public abstract Type ValueType()
+    -public abstract object Value()
+}
+ class PseudoAttributeT
+{
+    private Type m_ValueType;
+    private T? m_Value = default(T);
+    protected readonly List<T> m_PossibleValues;
+    public PseudoAttribute(string i_Name, IParser i_Parser, List<T> i_PossibleValues = null)
+    public PseudoAttribute(string i_Name, IParser i_Parser, object i_Value, List<T> i_PossibleValues = null)
+    public override bool hasFinitePossibleValues()
+    -public override List<object> PossibleValues()
+    -public override Type ValueType()
+}
+
+PseudoAttribute  <|-- PseudoAttributeT
+
+ class VehicleRecord
+{
+    private Vehicle m_Vehicle;
+    private string m_OwnerName;
+    private string m_OwnerPhoneNumber;
+    private eVehicleStatus m_VehicleStatus;
+    private AlphaBeitParser m_NameParser;
+    public VehicleRecord(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhoneNumber)
+    -public Vehicle PhysicalContent()
+    public override string ToString()
+    protected string PascalCaseToHumanReadable(string i_TextInPascalCase)
+    -public string OwnerName()
+    -public string OwnerPhone()
+    -public eVehicleStatus Status()
+    -public string LicenseNumber()
+}
+
+
+
+
+
+
+
+
+@enduml

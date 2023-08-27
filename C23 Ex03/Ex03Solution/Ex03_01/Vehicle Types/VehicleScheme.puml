@@ -1,0 +1,84 @@
+@startuml
+     abstract class Vehicle{
+        protected LettersAndDigitsParser m_LicenseNumberParser
+        protected string m_LicenseNumber
+        protected eVehicleStatus m_Status
+        protected List<Tire> m_Tires
+        protected Engine m_Engine
+        protected List<PseudoAttribute> m_UniqueDataMembers
+        public Vehicle()  
+        public Vehicle(string i_LicenseNumber)
+        public float? CurrentEnergyLevel()
+        public float GetMaxEnergy()
+        public float GetTiresMaxPressure()
+        public int GetTiresQuantity()
+        public void SetUniqueDataMembersValues(object[] i_NewValues)
+        private bool checkIfCanRecieveNewValues(object[] i_NewValues)
+        private static bool compareDataMembersLists(List<PseudoAttribute> i_List1, List<PseudoAttribute> i_List2)
+        protected abstract void intiateUniqueDataMembers()
+        public bool CheckIfAllTiresAreSet()
+        protected void InitiateTires(int i_TiresCount, float i_MaxAirPressure)
+        protected void InitiateEnumDataMember<E>()
+        protected static string ConvertEnumNameToHumanReadable(string i_EnumName)
+        protected void InitiateUFloatDataMember(string i_DataMemberName)
+        public virtual string UniqueDataMembersToString()
+      -  public eVehicleStatus Status()
+      - public string LicenseNumber()
+      - public Engine Engine()
+      - public List<Tire> Tires()
+      - public List<PseudoAttribute> UniqueDataMembers()
+}
+
+ class Truck 
+{
+    public Truck()
+    protected override void intiateUniqueDataMembers()
+}
+class Motorcycle
+{
+        public Motorcycle()
+        protected override void intiateUniqueDataMembers()
+}
+
+class FuelDrivenMotorcycle
+{
+        public FuelDrivenMotorcycle()
+}
+
+class ElectricityDrivenMotorcycle
+{
+    public ElectricityDrivenMotorcycle()
+}
+
+class Car
+{
+        public Car()
+        protected override void intiateUniqueDataMembers()
+        public override string UniqueDataMembersToString()
+}
+
+class FuelDrivenCar{
+        public FuelDrivenCar()
+}
+
+
+class ElectricityDrivenCar
+{
+    public ElectricityDrivenCar()
+}
+
+
+Vehicle  <|-- Truck
+Vehicle  <|-- Car
+Vehicle  <|-- Motorcycle
+Car  <|-- FuelDrivenCar
+Car  <|-- ElectricityDrivenCar
+Motorcycle  <|-- ElectricityDrivenMotorcycle
+Motorcycle  <|-- FuelDrivenMotorcycle
+
+
+
+
+
+
+@enduml

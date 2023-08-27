@@ -1,0 +1,33 @@
+@startuml
+interface IParser
+{
+    public abstract bool TryParse(string i_Input, out object o_ParsedInput);
+    public abstract bool IsParseable(string i_Input);
+}
+
+class BooleanParser
+{
+        public bool TryParse(string i_Input, out object o_ParsedInput)
+        public bool IsParseable(string i_Input)
+}
+
+class BoundedIntParser{
+        private int[] m_Range;
+        public BoundedIntParser(int[] i_Range )
+        public bool TryParse(string i_Input, out object o_InputAsBoundedInt)
+        public bool IsParseable(string i_Input)
+        public bool IsItemInRange<T>(T i_ExaminedValue, T[] i_Range) where T : IComparable<T>
+        public bool IsItemInRange<T>(T i_ExaminedValue, T i_BottomBound, T i_TopBound) where T : IComparable<T>
+        public void IncreaseUpperBound()
+}
+
+class DigitsParser
+{
+        public bool TryParse(string i_Input, out object o_ParsedInpt)
+        public bool IsParseable(string i_Input)
+}
+
+IParser <|--BooleanParser
+IParser <|-- BoundedIntParser
+IParser <|-- DigitsParser
+@enduml

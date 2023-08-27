@@ -11,4 +11,10 @@
       <ProjectReference Include="..\Ex03_01\Ex03_01.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Ex03_01">
+        <HintPath>..\Ex03_01\bin\Debug\net6.0\Ex03_01.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
