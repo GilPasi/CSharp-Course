@@ -17,33 +17,6 @@ public class Engine
         }
     }
 
-    // protected void AddEnergy(float i_EnergyToAdd)
-    // {
-    //     if (m_CurrentEnergyLevel == null)
-    //     {
-    //         /*It is likely that in this case, the user
-    //         Meant to actually set the energy level rather than
-    //         to add more energy*/
-    //         CurrentEnergyLevel = i_EnergyToAdd;
-    //     }
-    //     else
-    //     {
-    //         float maxEnergyToAdd = m_EnergyCapacity - (float)CurrentEnergyLevel;
-    //         if (i_EnergyToAdd > maxEnergyToAdd || i_EnergyToAdd < 0 )
-    //         {
-    //             string erroMessage = string.Format("Additional energy cannot exceed {0} and cannot be negative",
-    //                 maxEnergyToAdd);
-    //             
-    //             throw new ValueOutOfRangeException(new Exception(
-    //                     erroMessage),
-    //                 0, 
-    //                 m_EnergyCapacity - (float)m_CurrentEnergyLevel);
-    //         }
-    //
-    //         CurrentEnergyLevel += i_EnergyToAdd;
-    //     }
-    // }
-
     public float? CurrentEnergyLevel
     {
         get

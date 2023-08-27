@@ -17,22 +17,9 @@ namespace Ex03
             }
             set
             {
-                if (m_FuelType == null)
-                {
-                    m_FuelType = value;
-                }
+                m_FuelType ??= value;
             }
         }
-
-        // public void Refuel(eFuelType i_FuelType, float i_FuelQunatity)
-        // {
-        //     if (i_FuelType != m_FuelType)
-        //     {
-        //         string errorMessage = string.Format("Engine can only get {0} as fuel while got {1}" ,m_FuelType, i_FuelType);
-        //         throw new ArgumentException(errorMessage);
-        //     }
-        //     AddEnergy(i_FuelQunatity);
-        // }
     }
 }
 

@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace Ex03
 {
     public class ConsoleUI
@@ -264,6 +262,7 @@ namespace Ex03
         public void GetInformationAboutAVehicle()
         {
             VehicleRecord record;
+            
             if (makeQueryVehicle(out record))
             {
                 string report = m_Garage.GetRecordReport(record);
@@ -360,9 +359,9 @@ namespace Ex03
             bool allPropertiesFilled = true;
             int dataMemberPosition = 0;
 
-            foreach (PseudoAttribute uniquePropery in io_Vehicle.UniqueDataMembers)
+            foreach (PseudoAttribute uniqueProperty in io_Vehicle.UniqueDataMembers)
             {
-                Question<object> dataMemberQuestion = createQuestionFromUniqueDataMember(uniquePropery);
+                Question<object> dataMemberQuestion = createQuestionFromUniqueDataMember(uniqueProperty);
                 valuesForUniqueDataMembers[dataMemberPosition++] = dataMemberQuestion.AskAndForceInput();
             }
             

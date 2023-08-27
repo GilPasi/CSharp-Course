@@ -200,8 +200,6 @@ namespace Ex03
                 m_Tires.Add(new Tire(i_MaxAirPressure));
             }
         }
-
-
         
         protected void InitiateEnumDataMember<E>()
         {
