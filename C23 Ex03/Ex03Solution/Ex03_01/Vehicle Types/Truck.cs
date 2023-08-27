@@ -4,16 +4,22 @@ namespace Ex03
     {
         public Truck()
         {
-            //TODO: implement a unique properties logic
             const int k_WheelsQuantitiy = 12;
-            m_Engine = new FuelEngine();
-            m_Tires = new List<Tire>(k_WheelsQuantitiy);
+            m_Engine = new FuelEngine(130, eFuelType.Soler);
+            InitiateTires(12, 27);
+            
         }
 
-        public override void SetDataMembers(object[] i_Values)
+        protected override void intiateUniqueDataMembers()
         {
-            //TODO: implement properly
-            throw new NotImplementedException();
+            m_UniqueDataMembers = new List<PseudoAttribute>(2);
+            PseudoAttribute<bool> isCargoRefrigerated =
+                new PseudoAttribute<bool>("Cargo is refrigerated",
+                    new BoundedIntParser(new int[2]{0, 1}),
+                    new List<bool>(new bool[]{false, true})); 
+            
+            InitiateUFloatDataMember("Cargo Volume");
+            UniqueDataMembers.Add(isCargoRefrigerated);
         }
     }
 }

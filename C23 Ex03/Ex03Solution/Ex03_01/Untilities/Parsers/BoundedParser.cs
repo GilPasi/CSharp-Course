@@ -27,8 +27,22 @@ namespace Ex03
 
         public bool IsParseable(string i_Input)
         {
-            return int.TryParse(i_Input, out int inputAsInt) && 
-                   IOManipulator.IsItemInRange(inputAsInt, m_Range) ;
+            return int.TryParse(i_Input, out int inputAsInt) && IsItemInRange(inputAsInt, m_Range) ;
+        }
+        
+        public bool IsItemInRange<T>(T i_ExaminedValue, T[] i_Range) where T : IComparable<T>
+        {
+            return i_ExaminedValue.CompareTo(i_Range[0]) >= 0 && i_ExaminedValue.CompareTo(i_Range[1]) <= 0  ;
+        }
+        
+        public bool IsItemInRange<T>(T i_ExaminedValue, T i_BottomBound, T i_TopBound) where T : IComparable<T>
+        {
+            return i_ExaminedValue.CompareTo(i_BottomBound) >= 0 && i_ExaminedValue.CompareTo(i_TopBound) <= 0  ;
+        }
+        
+        public void IncreaseUpperBound()
+        {
+            m_Range[1]++;
         }
     }
 }

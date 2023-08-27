@@ -22,6 +22,30 @@ namespace Ex03
             Console.WriteLine(m_Wording);
         }
 
+        public string ErrorMessage
+        {
+            get
+            {
+                return m_ErrorMessage;
+            }
+            set
+            {
+                m_ErrorMessage = value;
+            }
+        }
+        
+        public string Wording
+        {
+            get
+            {
+                return m_Wording;
+            }
+            set
+            {
+                m_Wording = value;
+            }
+        }
+
         public abstract T Ask();
 
         public abstract T AskAndForceInput();

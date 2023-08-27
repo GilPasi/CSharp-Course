@@ -4,6 +4,7 @@ namespace Ex03
     {
         Octan98,
         Octan95,
+        Octan96,
         Soler,
     }
 }

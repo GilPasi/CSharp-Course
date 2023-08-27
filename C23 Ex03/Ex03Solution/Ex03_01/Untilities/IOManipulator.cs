@@ -3,16 +3,6 @@ namespace Ex03
 {
     public static class IOManipulator
     {
-        public static bool IsItemInRange<T>(T i_ExaminedValue, T i_BottomBound, T i_TopBound) where T : IComparable<T>
-        {
-            return i_ExaminedValue.CompareTo(i_BottomBound) >= 0 && i_ExaminedValue.CompareTo(i_TopBound) <= 0  ;
-        }
-        
-        public static bool IsItemInRange<T>(T i_ExaminedValue, T[] i_Range) where T : IComparable<T>
-        {
-            return i_ExaminedValue.CompareTo(i_Range[0]) >= 0 && i_ExaminedValue.CompareTo(i_Range[1]) <= 0  ;
-        }
-
         public static bool ContainsSpecialCharacters(string i_String)
         {
             bool result = false;

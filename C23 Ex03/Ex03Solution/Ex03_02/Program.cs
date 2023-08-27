@@ -6,7 +6,6 @@
         {
             ConsoleUI driver = new ConsoleUI();
             driver.PresentOptions();
-
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Ex03
             {
                 throw new ArgumentException("The options and the options texts must have the same length");
             }
-
+            
             m_OptionsAsText = i_OptionsAsText;
         }
         
@@ -25,7 +25,7 @@ namespace Ex03
             m_OptionsAsText = new List<string>(i_Options.Count) ;
         }
 
-        public LimitedChoiceQuestion(LimitedChoiceQuestion<T> i_OtherQuestion)
+        public LimitedChoiceQuestion(LimitedChoiceQuestion<T>? i_OtherQuestion)
         :base(i_OtherQuestion){
             m_Parser = i_OtherQuestion.m_Parser;
             m_Options = new List<T>(i_OtherQuestion.m_Options);
@@ -52,7 +52,7 @@ namespace Ex03
             int parsedInput;
             PresentQuestion();
             parsedInput = IOManipulator.ParseInput<int>("Your input must be a number of choice", m_Parser);
-            if (!IOManipulator.IsItemInRange<int>(parsedInput, 1, m_Options.Count))
+            if (!m_Parser.IsItemInRange<int>(parsedInput, 1, m_Options.Count))
             {
                 throw new ArgumentException("Your choice was not one of the options");
             }
@@ -113,6 +113,7 @@ namespace Ex03
         {
             m_Options.Add(i_OptionToAdd);
             m_OptionsAsText.Add(i_OptionAsString);
+            m_Parser.IncreaseUpperBound();
         }
         
         public void EditOption(int i_OptionPosition, T i_Option, string i_OptionAsString = null)

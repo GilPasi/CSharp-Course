@@ -2,15 +2,12 @@ namespace Ex03;
 
 public class ElectricalEngine : Engine
 {
-    public ElectricalEngine()
+    public ElectricalEngine(float i_BatteryCapacity):base(i_BatteryCapacity)
     {
     }
     
-    //TODO: implement properly
-    public override float? CurrentEnergyLevel
-    {
-        set { }
-        get { return m_CurrentEnergyLevel; }
-    }
-    
+    // public void Recharge(float i_NewCharge)
+    // {
+    //     CurrentEnergyLevel = i_NewCharge;
+    // }
 }
