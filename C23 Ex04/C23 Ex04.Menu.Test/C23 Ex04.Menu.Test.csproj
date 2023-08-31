@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>C23_Ex04.Menu.Test</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="C23 Ex04">
+        <HintPath>..\C23 Ex04.Menus.Interfaces\bin\Debug\net6.0\C23 Ex04.Menus.Interfaces.dll</HintPath>
+      </Reference>
+      <Reference Include="C23 Ex04.Menus.Interfaces">
+        <HintPath>..\C23 Ex04.Menus.Interfaces\bin\Debug\net6.0\C23 Ex04.Menus.Interfaces.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>
