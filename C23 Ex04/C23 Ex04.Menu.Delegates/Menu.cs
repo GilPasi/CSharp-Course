@@ -2,18 +2,16 @@ namespace Ex04.Menus.Delegates
 {
     public class Menu : Option
     {
-    
+        /// <summary>
+        /// Both Option instances and Menu instances
+        /// are steps in the MenuSystem.In fact every
+        /// SubMenu is an option since at can be chosen
+        /// and presented as an option.
+        /// </summary>
         private List<Option> m_SubOptions = new List<Option>();
         
-        public bool IsLeafOption
-        {
-            get
-            {
-                return m_SubOptions.Count == 0;
-            }
-        }
-        
-        public void AttachSubMenu(Option i_NewOption)
+        //#Accessors & Mutators:
+        public void AttachOption(Option i_NewOption)
         {
             i_NewOption.IsRootOption = false;
             i_NewOption.m_ChoiceSelectedDelegate += this.LeafOption_Selected;
@@ -122,11 +120,11 @@ namespace Ex04.Menus.Delegates
         }
         
         
-        //# Handlers
+        //#Event Handlers:
         private void LeafOption_Selected(Option i_TriggerOption)
         {
             CurrentStatus = eSystemStatus.ForceExit;
-            propagateStatus(this);
+            PropagateMessage(i_TriggerOption);
         }
     }
 }

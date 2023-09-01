@@ -2,13 +2,6 @@
 {
     public class Option 
     {
-
-
-        /// <summary>
-        /// Important note: every none-root node in the menus tree is
-        /// possible option to choose.Specifically leaf-menus are nodes with no
-        /// sub menus == final option.
-        /// </summary>
         protected bool m_IsRoot = true;
         protected eSystemStatus m_CurrentStatus = eSystemStatus.Ongoing;
         protected string m_Task = "no task";
@@ -76,6 +69,14 @@
                 m_CurrentStatus = value;
             }
         }
+        
+        protected bool IsLeafOption
+        {
+            get
+            {
+                return !(this is Menu);
+            }
+        }
 
         public string OptionZero
         {
@@ -93,7 +94,7 @@
             }
         }
         
-        //#Event handling/raising 
+        //#Event Inducers:
         
         /// <summary>
         /// Note that due to the recursive structure of the menu,
@@ -101,16 +102,14 @@
         /// event handlers.
         /// </summary>
         
-
-        
         public void OnOptionSelection(Option i_TriggerOption)
         {
             m_CurrentStatus = i_TriggerOption.m_CurrentStatus;
             //Update current status and keep propagating
-            propagateStatus(i_TriggerOption);
+            PropagateMessage(i_TriggerOption);
         }
 
-        protected void propagateStatus(Option i_TriggerOption)
+        protected void PropagateMessage(Option i_TriggerOption)
         {
             if (m_ChoiceSelectedDelegate != null)
             {

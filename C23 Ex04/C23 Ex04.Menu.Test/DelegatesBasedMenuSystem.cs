@@ -15,10 +15,6 @@ namespace Ex04.Menus.Delegates
             Option TimeOption = new Option();
             Option VersionOption = new Option();
             Option CountCapitalsOption = new Option();
-            DateOption.m_ChoiceSelectedDelegate += LeafOption_Selection;
-            TimeOption.m_ChoiceSelectedDelegate += LeafOption_Selection;
-            VersionOption.m_ChoiceSelectedDelegate += LeafOption_Selection;
-            CountCapitalsOption.m_ChoiceSelectedDelegate += LeafOption_Selection;
             DateOption.Task = "show date";
             TimeOption.Task = "show time";
             VersionOption.Task = "show version";
@@ -30,16 +26,18 @@ namespace Ex04.Menus.Delegates
             Menu DateTimeSubMenu = new Menu();
             DateTimeSubMenu.Text = "Show Date/Time";
             DateTimeSubMenu.InferName();
-            DateTimeSubMenu.AttachSubMenu(DateOption);
-            DateTimeSubMenu.AttachSubMenu(TimeOption);
+            DateTimeSubMenu.AttachOption(DateOption);
+            DateTimeSubMenu.AttachOption(TimeOption);
             Menu VersionCapitalsSubMenu = new Menu();
             VersionCapitalsSubMenu.Text = "Version and Capitals";
             VersionCapitalsSubMenu.InferName();
-            VersionCapitalsSubMenu.AttachSubMenu(VersionOption);
-            VersionCapitalsSubMenu.AttachSubMenu(CountCapitalsOption);
+            VersionCapitalsSubMenu.AttachOption(VersionOption);
+            VersionCapitalsSubMenu.AttachOption(CountCapitalsOption);
             RootMenu.Text = "Delegates Main Option";
-            RootMenu.AttachSubMenu(DateTimeSubMenu);
-            RootMenu.AttachSubMenu(VersionCapitalsSubMenu);
+            RootMenu.AttachOption(DateTimeSubMenu);
+            RootMenu.AttachOption(VersionCapitalsSubMenu);
+            RootMenu.m_ChoiceSelectedDelegate += LeafOption_Selection;
+
         }
 
         public Menu RootMenu
