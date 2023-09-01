@@ -2,7 +2,7 @@ namespace Ex04.Menus.Interfaces
 {
     public class InterfacesBasedMenuSystem : ISelectionObserver
     {
-        private Menu m_RootMenu = new Menu();
+        private Menu m_RootOption = new Menu();
 
         public void constructInterfacesMenu()
         {
@@ -11,10 +11,10 @@ namespace Ex04.Menus.Interfaces
             procedure is relevant for this assignment 
             and will not be relevant when reusing the 
             MenuSystem class again */
-            Menu DateOption = new Menu();
-            Menu TimeOption = new Menu();
-            Menu VersionOption = new Menu();
-            Menu CountCapitalsOption = new Menu();
+            Option DateOption = new Option();
+            Option TimeOption = new Option();
+            Option VersionOption = new Option();
+            Option CountCapitalsOption = new Option();
             DateOption.AttachObserver(this);
             TimeOption.AttachObserver(this);
             VersionOption.AttachObserver(this);
@@ -27,42 +27,41 @@ namespace Ex04.Menus.Interfaces
             TimeOption.Name = "Show Time";
             VersionOption.Name = "Show Version";
             CountCapitalsOption.Name = "Count Capitals";
-            Menu DateTimeSubMenu = new Menu();
-            DateTimeSubMenu.Text = "Show Date/Time";
-            DateTimeSubMenu.InferName();
-            DateTimeSubMenu.AttachSubMenu(DateOption);
-            DateTimeSubMenu.AttachSubMenu(TimeOption);
-            Menu VersionCapitalsSubMenu = new Menu();
-            VersionCapitalsSubMenu.Text = "Version and Capitals";
-            VersionCapitalsSubMenu.InferName();
-            VersionCapitalsSubMenu.AttachSubMenu(VersionOption);
-            VersionCapitalsSubMenu.AttachSubMenu(CountCapitalsOption);
-            RootMenu.Text = "Interfaces Main Menu";
-            RootMenu.AttachSubMenu(DateTimeSubMenu);
-            RootMenu.AttachSubMenu(VersionCapitalsSubMenu);
+            Menu dateTimeSubOption = new Menu();
+            dateTimeSubOption.Text = "Show Date/Time";
+            dateTimeSubOption.InferName();
+            dateTimeSubOption.AttachSubOption(DateOption);
+            dateTimeSubOption.AttachSubOption(TimeOption);
+            Menu versionCapitalsSubOption = new Menu();
+            versionCapitalsSubOption.Text = "Version and Capitals";
+            versionCapitalsSubOption.InferName();
+            versionCapitalsSubOption.AttachSubOption(VersionOption);
+            versionCapitalsSubOption.AttachSubOption(CountCapitalsOption);
+            RootOption.Text = "Interfaces Main Menu";
+            RootOption.AttachSubOption(dateTimeSubOption);
+            RootOption.AttachSubOption(versionCapitalsSubOption);
         }
 
-        public Menu RootMenu
+        public Menu RootOption
         {
             get
             {
-                return m_RootMenu;
+                return m_RootOption;
             }
             set
             {
-                m_RootMenu = value;
+                m_RootOption = value;
             }
         }
 
         public void Initiate()
         {
-            Menu.eSystemStatus status = Menu.eSystemStatus.Ongoing;
-            RootMenu.Initiate();
+            RootOption.Initiate();
         }
 
-        public void HandleSelect(Menu i_MenuReference)
+        public void HandleSelect(Option i_OptionReference)
         {
-            Program.FulfillRequest(i_MenuReference.Task);
+            Program.FulfillRequest(i_OptionReference.Task);
         }
     }
 }

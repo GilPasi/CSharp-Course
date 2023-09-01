@@ -4,10 +4,10 @@
     {
         public static void Main()
         {
-            // Interfaces.InterfacesBasedMenuSystem interfaceMenu = new Interfaces.InterfacesBasedMenuSystem();
-            // interfaceMenu.constructInterfacesMenu();
-            // interfaceMenu.Initiate();
-
+            Interfaces.InterfacesBasedMenuSystem interfaceMenu = new Interfaces.InterfacesBasedMenuSystem();
+            interfaceMenu.constructInterfacesMenu();
+            interfaceMenu.Initiate();
+            Console.WriteLine("==============================================================");
              Delegates.DelegatesBasedMenuSystem delegatesMenu = new Delegates.DelegatesBasedMenuSystem();
             delegatesMenu.constructDelegatesMenu();
             delegatesMenu.Initiate();

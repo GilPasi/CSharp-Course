@@ -2,12 +2,6 @@ namespace Ex04.Menus.Delegates
 {
     public class Menu : Option
     {
-        /// <summary>
-        /// Both Option instances and Menu instances
-        /// are steps in the MenuSystem.In fact every
-        /// SubMenu is an option since at can be chosen
-        /// and presented as an option.
-        /// </summary>
         private List<Option> m_SubOptions = new List<Option>();
         
         //#Accessors & Mutators:
@@ -27,20 +21,8 @@ namespace Ex04.Menus.Delegates
         /// down and up the tree so all the nodes are
         /// updated with the current status in any given  moment.
         /// </summary>
-        public void Initiate()
-        {
-            if (IsLeafOption)
-            {
-                m_CurrentStatus = eSystemStatus.ForceExit;
-                OnOptionSelection(this);
-            }
-            else
-            {
-                manageOption();
-            }
-        }
 
-        private void manageOption()
+        public void Initiate()
         {
             while (m_CurrentStatus != eSystemStatus.ForceExit)
             {
@@ -60,13 +42,13 @@ namespace Ex04.Menus.Delegates
                 if (m_CurrentStatus == eSystemStatus.Ongoing)
                 {
                     Option userChoiceAsOption = m_SubOptions[userChoice - 1];
-                    if (userChoiceAsOption is Menu)
+                    if (userChoiceAsOption.IsLeafOption)
                     {
-                        (userChoiceAsOption as Menu).Initiate();
+                        userChoiceAsOption.OnOptionSelection(userChoiceAsOption);
                     }
                     else
                     {
-                        userChoiceAsOption.OnOptionSelection(userChoiceAsOption);
+                        (userChoiceAsOption as Menu).Initiate();
                     }
                 }
             }
@@ -88,6 +70,13 @@ namespace Ex04.Menus.Delegates
             return ForceOptionInput();
         }
         
+        //#Event Handlers:
+        private void LeafOption_Selected(Option i_TriggerOption)
+        {
+            CurrentStatus = i_TriggerOption.CurrentStatus;
+            //Update current status and keep propagating
+            PropagateMessage(i_TriggerOption);
+        }
         
         //#Utility methods:
         private int ForceOptionInput()
@@ -117,14 +106,6 @@ namespace Ex04.Menus.Delegates
         private static bool doesUserWantToGoBack(int i_UserChoice)
         {
             return i_UserChoice == 0;
-        }
-        
-        
-        //#Event Handlers:
-        private void LeafOption_Selected(Option i_TriggerOption)
-        {
-            CurrentStatus = eSystemStatus.ForceExit;
-            PropagateMessage(i_TriggerOption);
         }
     }
 }

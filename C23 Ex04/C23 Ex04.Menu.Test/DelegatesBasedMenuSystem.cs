@@ -54,7 +54,6 @@ namespace Ex04.Menus.Delegates
 
         public void Initiate()
         {
-            eSystemStatus status = eSystemStatus.Ongoing;
             RootMenu.Initiate();
         }
 
