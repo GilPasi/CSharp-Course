@@ -1,8 +1,17 @@
 ﻿using System;
 namespace Ex04.Menus.Interfaces
 {
-    public class Menu
+    public class Menu : ISelectionObserver
     {
+        private bool m_IsRoot = true;
+        private eSystemStatus m_CurrentStatus = eSystemStatus.Ongoing;
+        public enum eSystemStatus
+        {
+            Ongoing,
+            BackOneOrExit,
+            ForceExit,
+        }
+
         /// <summary>
         /// Important note: every none-root node in the menus tree is
         /// possible option to choose.Specifically leaf-menus are nodes with no
@@ -14,7 +23,7 @@ namespace Ex04.Menus.Interfaces
         private List<Menu> m_SubMenus = new List<Menu>();
         private List<ISelectionObserver> m_Observers = new List<ISelectionObserver>();
         
-        //#Properties:
+        //#Accessors & Mutators
         public string Text
         {
             get
@@ -51,19 +60,15 @@ namespace Ex04.Menus.Interfaces
             }
         }
 
-        public void InferName()
-        {
-            if (Name == null && Text != null)
-            {
-                Name = Text;
-            }
-        }
-
         public bool IsRootMenu
         {
             get
             {
-                return m_Observers.Count == 0;
+                return m_IsRoot;
+            }
+            set
+            {
+                m_IsRoot = value;
             }
         }
         
@@ -82,10 +87,20 @@ namespace Ex04.Menus.Interfaces
                 return IsRootMenu? "exit" : "back";
             }
         }
+        
+        public void InferName()
+        {
+            if (Name == null && Text != null)
+            {
+                Name = Text;
+            }
+        }
 
         public void AttachSubMenu(Menu i_NewMenu)
         {
+            i_NewMenu.m_IsRoot = false;
             m_SubMenus.Add(i_NewMenu);
+            i_NewMenu.AttachObserver(this);
         }
 
         public void AttachObserver(ISelectionObserver i_NewObserver)
@@ -94,46 +109,68 @@ namespace Ex04.Menus.Interfaces
         }
         
         //#Operations
-        public bool Initiate()
+        
+        /// <summary>
+        /// This Menu node is implemented as a part of
+        /// a while menus tree.Therefore it has a
+        /// mechanism for propagating the user's input
+        /// down and up the tree so all the nodes are
+        /// updated with the current status in any given  moment.
+        /// </summary>
+        public void Initiate()
         {
-            bool backMenu = true;   
-            
             if (IsLeafMenu)
             {
+                m_CurrentStatus = eSystemStatus.ForceExit;
                 NotifyAllObservers();
-                backMenu = false;
             }
             else
             {
-                // while (backMenu)
-                // {
-                    backMenu = PresentMenu();                }
-                
-                //Will result a recursive call to initiate
-            // }
-
-            return backMenu;
+                manageMenu();
+            }
         }
-        
-        private void NotifyAllObservers(Menu i_MenuRefernce = null)
+
+        private void manageMenu()
         {
-            if (i_MenuRefernce == null)
+            while (m_CurrentStatus != eSystemStatus.ForceExit)
             {
-                i_MenuRefernce = this;
+                if (m_CurrentStatus == eSystemStatus.BackOneOrExit)
+                {
+                    //One step back is already taken
+                    m_CurrentStatus = eSystemStatus.Ongoing;
+                }
+
+                int userChoice = PresentMenu();
+                if (doesUserWantToGoBack(userChoice))
+                {
+                    m_CurrentStatus = eSystemStatus.BackOneOrExit;
+                    break;// == go back one menu
+                }
+
+                if (m_CurrentStatus == eSystemStatus.Ongoing)
+                {
+                    Menu userChoiceAsMenu = m_SubMenus[userChoice - 1];
+                    userChoiceAsMenu.Initiate();
+                }
+            }
+        }
+
+        private void NotifyAllObservers(Menu i_TriggerMenu = null)
+        {
+            if (i_TriggerMenu == null)
+            {
+                i_TriggerMenu = this;
             }
 
             foreach (ISelectionObserver observer in m_Observers)
             {
-                observer.HandleSelect(i_MenuRefernce);
+                observer.HandleSelect(i_TriggerMenu);
             }
         }
 
-        public bool PresentMenu()
+        public int PresentMenu()
         {
             int menuCount = 1;
-            int userChoice;
-            Menu userChoiceAsMenu;
-            bool backOptionWasChosen;
             
             Console.WriteLine("Enter your request (1 to {0} or press '0' to {1})",
                 m_SubMenus.Count, OptionZero);
@@ -144,19 +181,11 @@ namespace Ex04.Menus.Interfaces
             }
 
             Console.WriteLine("0 -> {0}", OptionZero );
-
-            userChoice = ForceOptionInput();
-            backOptionWasChosen = userChoice == 0;
-            if (!backOptionWasChosen)
-            {
-                userChoiceAsMenu = m_SubMenus[userChoice - 1];
-                userChoiceAsMenu.Initiate();
-            }
-
-            return backOptionWasChosen;
+            return ForceOptionInput();
         }
 
-        public int ForceOptionInput()
+        //#Utility methods:
+        private int ForceOptionInput()
         {
             bool isValidOption = false;
             int userChoice = 0;
@@ -174,10 +203,28 @@ namespace Ex04.Menus.Interfaces
 
             return userChoice;
         }
-
+        
+        private static bool doesUserWantToGoBack(int i_UserChoice)
+        {
+            return i_UserChoice == 0;
+        }
+        
         private static bool IsInRange(int i_Value, int i_UpperBound = int.MaxValue, int i_LowerBound = 0)
         {
             return i_Value < i_UpperBound && i_Value >= i_LowerBound;
+        }
+        
+        //#Implementations:
+        public void HandleSelect(Menu i_TriggerMenu)
+        {
+            m_CurrentStatus = i_TriggerMenu.m_CurrentStatus;
+            foreach (ISelectionObserver observer in m_Observers)
+            {
+                if (observer is Menu)
+                {
+                    observer.HandleSelect(i_TriggerMenu);
+                }
+            }
         }
     }
 }

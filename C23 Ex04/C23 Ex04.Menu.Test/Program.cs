@@ -1,18 +1,19 @@
-﻿using System;
-using Ex04.Menus.Interfaces;
-
-namespace Ex04.Menus
+﻿namespace Ex04.Menus
 {
     public class Program
     {
         public static void Main()
         {
-            MenuSystem interfacesMenu = new MenuSystem();
-            interfacesMenu.constructInterfacesMenu();
-            interfacesMenu.Initiate();
+            // Interfaces.InterfacesBasedMenuSystem interfaceMenu = new Interfaces.InterfacesBasedMenuSystem();
+            // interfaceMenu.constructInterfacesMenu();
+            // interfaceMenu.Initiate();
+
+             Delegates.DelegatesBasedMenuSystem delegatesMenu = new Delegates.DelegatesBasedMenuSystem();
+            delegatesMenu.constructDelegatesMenu();
+            delegatesMenu.Initiate();
         }
         
-        public static void FullfillRequest(string i_Task)
+        public static void FulfillRequest(string i_Task)
         {
             switch (i_Task)
             {

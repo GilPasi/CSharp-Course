@@ -2,15 +2,9 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <RootNamespace>C23_Ex04</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <OutputType>Exe</OutputType>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Remove="FinalOption.cs" />
-    </ItemGroup>
-
-
 
 </Project>

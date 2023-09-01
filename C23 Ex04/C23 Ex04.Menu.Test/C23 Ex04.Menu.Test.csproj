@@ -8,13 +8,16 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+
     <ItemGroup>
-      <Reference Include="C23 Ex04">
-        <HintPath>..\C23 Ex04.Menus.Interfaces\bin\Debug\net6.0\C23 Ex04.Menus.Interfaces.dll</HintPath>
+      <Reference Include="C23 Ex04.Menu.Delegates">
+        <HintPath>..\C23 Ex04.Menu.Delegates\bin\Debug\net6.0\C23 Ex04.Menu.Delegates.dll</HintPath>
       </Reference>
-      <Reference Include="C23 Ex04.Menus.Interfaces">
-        <HintPath>..\C23 Ex04.Menus.Interfaces\bin\Debug\net6.0\C23 Ex04.Menus.Interfaces.dll</HintPath>
-      </Reference>
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <ProjectReference Include="..\C23 Ex04.Menus.Interfaces\C23 Ex04.Menus.Interfaces.csproj" />
     </ItemGroup>
 
 </Project>

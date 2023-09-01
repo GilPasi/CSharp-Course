@@ -1,24 +1,24 @@
-namespace Ex04.Menus.Interfaces
+namespace Ex04.Menus.Delegates
 {
-    public class MenuSystem : ISelectionObserver
+    public class DelegatesBasedMenuSystem 
     {
-        Menu m_RootMenu = new Menu();
+        private Menu m_RootMenu = new Menu();
 
-        public void constructInterfacesMenu()
+        public void constructDelegatesMenu()
         {
             /*This method was implemented as a member method
             rather than a constructor because the that
             procedure is relevant for this assignment 
             and will not be relevant when reusing the 
             MenuSystem class again */
-            Menu DateOption = new Menu();
-            Menu TimeOption = new Menu();
-            Menu VersionOption = new Menu();
-            Menu CountCapitalsOption = new Menu();
-            DateOption.AttachObserver(this);
-            TimeOption.AttachObserver(this);
-            VersionOption.AttachObserver(this);
-            CountCapitalsOption.AttachObserver(this);
+            Option DateOption = new Option();
+            Option TimeOption = new Option();
+            Option VersionOption = new Option();
+            Option CountCapitalsOption = new Option();
+            DateOption.m_ChoiceSelectedDelegate += LeafOption_Selection;
+            TimeOption.m_ChoiceSelectedDelegate += LeafOption_Selection;
+            VersionOption.m_ChoiceSelectedDelegate += LeafOption_Selection;
+            CountCapitalsOption.m_ChoiceSelectedDelegate += LeafOption_Selection;
             DateOption.Task = "show date";
             TimeOption.Task = "show time";
             VersionOption.Task = "show version";
@@ -37,7 +37,7 @@ namespace Ex04.Menus.Interfaces
             VersionCapitalsSubMenu.InferName();
             VersionCapitalsSubMenu.AttachSubMenu(VersionOption);
             VersionCapitalsSubMenu.AttachSubMenu(CountCapitalsOption);
-            RootMenu.Text = "Interfaces Main Menu";
+            RootMenu.Text = "Delegates Main Option";
             RootMenu.AttachSubMenu(DateTimeSubMenu);
             RootMenu.AttachSubMenu(VersionCapitalsSubMenu);
         }
@@ -56,12 +56,13 @@ namespace Ex04.Menus.Interfaces
 
         public void Initiate()
         {
-            while (!RootMenu.Initiate()) ;
+            eSystemStatus status = eSystemStatus.Ongoing;
+            RootMenu.Initiate();
         }
 
-        public void HandleSelect(Menu i_MenuReference)
+        public void LeafOption_Selection(Option i_TriggerOption)
         {
-            Program.FullfillRequest(i_MenuReference.Task);
+            Program.FulfillRequest(i_TriggerOption.Task);
         }
     }
 }
